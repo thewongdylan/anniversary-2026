@@ -1,0 +1,5 @@
+# venv
+.anni_venv/
+
+# env
+.env
