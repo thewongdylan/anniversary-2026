@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Circle Line Explorer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @keyframes pulse {
+            0%, 100% { r: 8; opacity: 0.8; }
+            50% { r: 16; opacity: 0.2; }
+        }
+        .pulse-glow {
+            animation: pulse 2s infinite ease-in-out;
+            transform-origin: center;
+        }
+        /* Expand dots on hover by increasing radius */
+        .group:hover .outer-dot {
+            r: 12 !important;
+            transition: r 300ms ease-in-out;
+        }
+        .group:hover .inner-dot {
+            r: 7 !important;
+            transition: r 300ms ease-in-out;
+        }
+        .outer-dot {
+            transition: r 300ms ease-in-out;
+        }
+        .inner-dot {
+            transition: r 300ms ease-in-out;
+        }
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-white text-black font-sans antialiased selection:bg-orange-500/30 selection:text-orange-200">
+    <!-- Main Mobile Container -->
+    <div class="max-w-md mx-auto min-h-screen bg-white flex flex-col justify-between shadow-2xl border-x border-slate-200/60 relative overflow-x-auto">
+        
+        <!-- Header Section -->
+        <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/30">
+                    <i class="fa-solid fa-train-subway text-orange-500 text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-2">
+                        The First Anniversary of Dylan and Laura
+                        <!-- <span class="bg-orange-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-black tracking-wide">CC</span> -->
+                    </h1>
+                    <p class="text-[11px] text-slate-200 font-medium italic">You spin me right round baby right round</p>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- Main Map Area -->
+        <main class="flex-1 flex flex-col justify-center items-center py-6 relative">
+            <!-- <div class="w-full max-w-sm bg-slate-900/40 border border-slate-800/50 rounded-2xl p-3 shadow-inner relative"> -->
+            <div class="w-full flex justify-center">
+                
+                <!-- SVG MRT Map -->
+                <svg viewBox="0 0 470 400" class="w-full h-auto drop-shadow-[0_0_15px_rgba(251,146,60,0.05)]" preserveAspectRatio="xMidYMid meet" style="max-height: 500px;">
+                    <defs>
+                        <!-- Glowing orange for active station -->
+                        <filter id="glow-active" x="-30%" y="-30%" width="160%" height="160%">
+                            <feGaussianBlur stdDeviation="3.5" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+
+                    <!-- The main Circle Line (Orange) -->
+                    <circle cx="220" cy="200" r="140" fill="none" stroke="#FF9E1B" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+
+                    <!-- Stations Group -->
+                    
+                    <!-- Station 1: Paya Lebar (CC9) -->
+                    <g id="station-paya_lebar" class="station-group group transition-all duration-300" data-id="paya_lebar" data-index="0">
+                        <!-- Active Glow -->
+                        <circle class="glow pulse-glow" cx="355" cy="235" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
+                        <!-- Outer Border Dot -->
+                        <circle class="outer-dot" cx="355" cy="235" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
+                        <!-- Inner Dot -->
+                        <circle class="inner-dot" cx="355" cy="235" r="5" fill="#475569" />
+                        
+                        <!-- Badge -->
+                        <rect class="badge-bg transition-colors duration-300" x="367" y="227" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-sans font-black" x="384" y="238" font-size="9" text-anchor="middle" fill="#64748B">CC9</text>
+                        
+                        <!-- Label -->
+                        <text class="station-name font-sans font-bold transition-colors duration-300" x="375" y="257" font-size="12" text-anchor="start" fill="#475569">Paya Lebar</text>
+                    </g>
+                    
+                    <!-- Station 2: MacPherson (CC10) -->
+                    <g id="station-macpherson" class="station-group group transition-all duration-300" data-id="macpherson" data-index="1">
+                        <circle class="glow pulse-glow" cx="357" cy="176" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
+                        <circle class="outer-dot" cx="357" cy="176" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
+                        <circle class="inner-dot" cx="357" cy="176" r="5" fill="#475569" />
+                        
+                        <rect class="badge-bg transition-colors duration-300" x="369" y="168" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-sans font-black" x="386" y="179" font-size="9" text-anchor="middle" fill="#64748B">CC10</text>
+                        
+                        <text class="station-name font-sans font-bold transition-colors duration-300" x="380" y="198" font-size="12" text-anchor="start" fill="#475569">MacPherson</text>
+                    </g>
+
+                    <!-- Station 3: Serangoon (CC13) -->
+                    <g id="station-serangoon" class="station-group group transition-all duration-300" data-id="serangoon" data-index="2">
+                        <circle class="glow pulse-glow" cx="319" cy="101" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
+                        <circle class="outer-dot" cx="319" cy="101" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
+                        <circle class="inner-dot" cx="319" cy="101" r="5" fill="#475569" />
+                        
+                        <rect class="badge-bg transition-colors duration-300" x="331" y="93" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-sans font-black" x="348" y="104" font-size="9" text-anchor="middle" fill="#64748B">CC13</text>
+                        
+                        <text class="station-name font-sans font-bold transition-colors duration-300" x="369" y="105" font-size="12" text-anchor="start" fill="#475569">Serangoon</text>
+                    </g>
+
+                    <!-- Station 4: Buona Vista (CC22) -->
+                    <g id="station-buona_vista" class="station-group group transition-all duration-300" data-id="buona_vista" data-index="3">
+                        <circle class="glow pulse-glow" cx="85" cy="235" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
+                        <circle class="outer-dot" cx="85" cy="235" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
+                        <circle class="inner-dot" cx="85" cy="235" r="5" fill="#475569" />
+                        
+                        <rect class="badge-bg transition-colors duration-300" x="39" y="227" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-sans font-black" x="56" y="238" font-size="9" text-anchor="middle" fill="#64748B">CC22</text>
+                        
+                        <text class="station-name font-sans font-bold transition-colors duration-300" x="82" y="258" font-size="12" text-anchor="end" fill="#475569">Buona Vista</text>
+                    </g>
+
+                    <!-- Station 5: Marina Bay (CC33) -->
+                    <g id="station-marina_bay" class="station-group group transition-all duration-300" data-id="marina_bay" data-index="4">
+                        <circle class="glow pulse-glow" cx="290" cy="321" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
+                        <circle class="outer-dot" cx="290" cy="321" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
+                        <circle class="inner-dot" cx="290" cy="321" r="5" fill="#475569" />
+                        
+                        <rect class="badge-bg transition-colors duration-300" x="302" y="313" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-sans font-black" x="319" y="324" font-size="9" text-anchor="middle" fill="#64748B">CC33</text>
+                        
+                        <text class="station-name font-sans font-bold transition-colors duration-300" x="340" y="325" font-size="12" text-anchor="start" fill="#475569">Marina Bay</text>
+                    </g>
+                </svg>
+
+                <!-- Helpful visual link legend overlay inside map container -->
+                <div class="absolute bottom-3 left-4 flex items-center space-x-2 text-[12px] text-black-400 px-2 py-1 rounded-md border border-slate-800/40 backdrop-blur-sm">
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
+                    <span>Visited</span>
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_5px_rgba(249,115,22,0.5)]"></span>
+                    <span>Active</span>
+                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-slate-600"></span>
+                    <span>Locked</span>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Informational Panel -->
+        <footer class="bg-white border-t border-slate-200/60 p-5 space-y-4">
+            
+            <!-- Instructions Card -->
+            <div id="instructions-card" class="bg-slate-950/50 rounded-xl p-3.5 border border-slate-800/50 flex items-start space-x-3 transition-all duration-300">
+                <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-orange-500 border border-orange-500/20">
+                    <i class="fa-solid fa-compass text-sm"></i>
+                </div>
+                <div class="flex-1 space-y-1">
+                    <h3 class="text-xs font-bold text-slate-200">Current Objective</h3>
+                    <p class="text-[11px] text-slate-400 leading-relaxed">
+                        Navigate the Circle Line in sequence. Tap the active station <span id="next-station-badge" class="bg-orange-500 text-slate-950 px-1 py-0.2 rounded text-[9px] font-black tracking-wide">CC9</span> <strong id="next-station-name" class="text-orange-400">Paya Lebar</strong> to begin exploration.
+                    </p>
+                </div>
+            </div>
+
+            <button onclick="resetProgress()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-800/60 hover:bg-red-950/40 hover:text-red-400 border border-slate-700/50 hover:border-red-900/50 transition-all flex items-center gap-1" title="Reset Journey">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+            </button>
+
+            <!-- Celebration Card (Hidden initially) -->
+            <div id="celebration-card" class="hidden bg-emerald-950/20 rounded-xl p-4 border border-emerald-500/20 flex flex-col items-center text-center space-y-2.5 transition-all duration-300">
+                <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/30">
+                    <i class="fa-solid fa-trophy text-lg"></i>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider">Line Fully Unlocked!</h3>
+                    <p class="text-[11px] text-emerald-500/80 leading-relaxed">
+                        Congratulations! You have navigated all 5 key interchange stations of the Circle Line successfully. Re-explore any station by tapping on it!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-semibold">Adventure Progress</span>
+                    <span id="progress-text" class="text-orange-400 font-bold">0 of 5 Stations Visited</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800/60 p-[1px]">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-orange-600 to-orange-400 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="text-[10px] text-center text-slate-500 font-medium">
+                Circle Line Explorer • Developed in 2026
+            </div>
+        </footer>
+
+        <!-- Toast Notification system -->
+        <div id="toast" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 translate-y-24 opacity-0 transition-all duration-500 ease-out bg-slate-950 text-slate-200 text-xs py-2.5 px-4 rounded-xl shadow-2xl border border-slate-800 flex items-center space-x-2 pointer-events-none z-50 whitespace-nowrap">
+            <span class="toast-msg font-medium">🔒 Station is locked!</span>
+        </div>
+
+    </div>
+
+    <!-- Map Logic -->
+    <script>
+        const stations = [
+            { id: 'paya_lebar', name: 'Paya Lebar', code: 'CC9', file: 'paya_lebar.html' },
+            { id: 'macpherson', name: 'MacPherson', code: 'CC10', file: 'macpherson.html' },
+            { id: 'serangoon', name: 'Serangoon', code: 'CC13', file: 'serangoon.html' },
+            { id: 'buona_vista', name: 'Buona Vista', code: 'CC22', file: 'buona_vista.html' },
+            { id: 'marina_bay', name: 'Marina Bay', code: 'CC33', file: 'marina_bay.html' }
+        ];
+
+        function getProgress() {
+            const val = localStorage.getItem('mrt_progress');
+            if (val === null) {
+                localStorage.setItem('mrt_progress', '0');
+                return 0;
+            }
+            return parseInt(val);
+        }
+
+        function updateMap() {
+            const progress = getProgress();
+            
+            stations.forEach((station, index) => {
+                const group = document.getElementById(`station-${station.id}`);
+                if (!group) return;
+
+                const glow = group.querySelector('.glow');
+                const outerDot = group.querySelector('.outer-dot');
+                const innerDot = group.querySelector('.inner-dot');
+                const badgeBg = group.querySelector('.badge-bg');
+                const badgeText = group.querySelector('.badge-text');
+                const stationName = group.querySelector('.station-name');
+
+                if (index < progress) {
+                    // Visited / Completed
+                    glow.style.display = 'none';
+                    outerDot.setAttribute('fill', '#D1FAE5'); 
+                    outerDot.setAttribute('stroke', '#10B981'); 
+                    innerDot.setAttribute('fill', '#10B981'); 
+                    badgeBg.setAttribute('fill', '#10B981');
+                    badgeText.setAttribute('fill', '#022c22');
+                    stationName.setAttribute('fill', '#10B981'); 
+                    stationName.style.fontWeight = '700';
+                } else if (index === progress) {
+                    // Active (Current Next)
+                    glow.style.display = 'block';
+                    outerDot.setAttribute('fill', '#FFFFFF');
+                    outerDot.setAttribute('stroke', '#FF9E1B');
+                    innerDot.setAttribute('fill', '#FF9E1B');
+                    badgeBg.setAttribute('fill', '#FF9E1B');
+                    badgeText.setAttribute('fill', '#FFFFFF');
+                    stationName.setAttribute('fill', '#FF9E1B'); 
+                    stationName.style.fontWeight = '800';
+                } else {
+                    // Locked
+                    glow.style.display = 'none';
+                    outerDot.setAttribute('fill', '#1E293B'); 
+                    outerDot.setAttribute('stroke', '#475569'); 
+                    innerDot.setAttribute('fill', '#475569');
+                    badgeBg.setAttribute('fill', '#334155');
+                    badgeText.setAttribute('fill', '#64748B');
+                    stationName.setAttribute('fill', '#64748B'); 
+                    stationName.style.fontWeight = '500';
+                }
+            });
+
+            // Update bottom stats
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            const percent = (progress / stations.length) * 100;
+            progressBar.style.width = `${percent}%`;
+            progressText.textContent = `${progress} of ${stations.length} Stations Visited`;
+
+            // Display celebration vs normal objective
+            if (progress >= stations.length) {
+                document.getElementById('celebration-card').classList.remove('hidden');
+                document.getElementById('instructions-card').classList.add('hidden');
+            } else {
+                document.getElementById('celebration-card').classList.add('hidden');
+                document.getElementById('instructions-card').classList.remove('hidden');
+                
+                const nextStation = stations[progress];
+                if (nextStation) {
+                    document.getElementById('next-station-badge').textContent = nextStation.code;
+                    document.getElementById('next-station-name').textContent = nextStation.name;
+                }
+            }
+        }
+
+        // Setup event listeners for clicking
+        stations.forEach((station, index) => {
+            const group = document.getElementById(`station-${station.id}`);
+            if (!group) return;
+
+            group.addEventListener('click', () => {
+                const progress = getProgress();
+                if (index <= progress) {
+                    // Unlocked or visited
+                    window.location.href = station.file;
+                } else {
+                    // Locked
+                    showToast(`🔒 ${station.name} is locked! Visit previous stations first.`);
+                }
+            });
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.querySelector('.toast-msg').textContent = message;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            // Clear prior timeouts
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+            
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 2500);
+        }
+
+        function resetProgress() {
+            localStorage.setItem('mrt_progress', '0');
+            updateMap();
+            showToast('🔄 Map progress has been reset!');
+        }
+
+        // Initialize map on page load
+        window.addEventListener('DOMContentLoaded', updateMap);
+    </script>
+</body>
+</html>
