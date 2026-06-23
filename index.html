@@ -12,6 +12,61 @@
             0%, 100% { r: 8; opacity: 0.8; }
             50% { r: 16; opacity: 0.2; }
         }
+        @keyframes station-discovery-light {
+            0% {
+                opacity: 0;
+                transform: scale(0.2);
+            }
+            20% {
+                opacity: 0.95;
+                transform: scale(0.7);
+            }
+            65% {
+                opacity: 0.8;
+                transform: scale(1.35);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.9);
+            }
+        }
+        @keyframes station-discovery-fade {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .station-group {
+            opacity: 1;
+            transition: opacity 1800ms ease;
+        }
+        .station-hidden {
+            display: none;
+        }
+        .station-unlock-enter {
+            opacity: 0;
+        }
+        .station-group .unlock-flash {
+            opacity: 0;
+            transform-box: fill-box;
+            transform-origin: center;
+            pointer-events: none;
+        }
+        .station-group.station-unlocking .unlock-flash {
+            animation: station-discovery-light 1200ms ease-out forwards;
+        }
+        .station-group.station-unlocking .outer-dot,
+        .station-group.station-unlocking .inner-dot,
+        .station-group.station-unlocking .badge-bg,
+        .station-group.station-unlocking .badge-text,
+        .station-group.station-unlocking .station-name,
+        .station-group.station-unlocking .glow {
+            opacity: 0;
+            animation: station-discovery-fade 1800ms ease forwards;
+            animation-delay: 850ms;
+        }
         .pulse-glow {
             animation: pulse 2s infinite ease-in-out;
             transform-origin: center;
@@ -87,6 +142,7 @@
                     
                     <!-- Station 1: Paya Lebar (CC9) -->
                     <g id="station-paya_lebar" class="station-group group transition-all duration-300" data-id="paya_lebar" data-index="0">
+                        <circle class="unlock-flash" cx="355" cy="235" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <!-- Active Glow -->
                         <circle class="glow pulse-glow" cx="355" cy="235" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <!-- Outer Border Dot -->
@@ -104,6 +160,7 @@
                     
                     <!-- Station 2: MacPherson (CC10) -->
                     <g id="station-macpherson" class="station-group group transition-all duration-300" data-id="macpherson" data-index="1">
+                        <circle class="unlock-flash" cx="357" cy="176" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="357" cy="176" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="357" cy="176" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="357" cy="176" r="5" fill="#475569" />
@@ -116,6 +173,7 @@
 
                     <!-- Station 3: Serangoon (CC13) -->
                     <g id="station-serangoon" class="station-group group transition-all duration-300" data-id="serangoon" data-index="2">
+                        <circle class="unlock-flash" cx="319" cy="101" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="319" cy="101" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="319" cy="101" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="319" cy="101" r="5" fill="#475569" />
@@ -128,6 +186,7 @@
 
                     <!-- Station 4: Buona Vista (CC22) -->
                     <g id="station-buona_vista" class="station-group group transition-all duration-300" data-id="buona_vista" data-index="3">
+                        <circle class="unlock-flash" cx="85" cy="235" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="85" cy="235" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="85" cy="235" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="85" cy="235" r="5" fill="#475569" />
@@ -140,6 +199,7 @@
 
                     <!-- Station 5: Marina Bay (CC33) -->
                     <g id="station-marina_bay" class="station-group group transition-all duration-300" data-id="marina_bay" data-index="4">
+                        <circle class="unlock-flash" cx="290" cy="321" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="290" cy="321" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="290" cy="321" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="290" cy="321" r="5" fill="#475569" />
@@ -157,8 +217,6 @@
                     <span>Visited</span>
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_5px_rgba(249,115,22,0.5)]"></span>
                     <span>Active</span>
-                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-slate-600"></span>
-                    <span>Locked</span>
                 </div>
             </div>
         </main>
@@ -238,7 +296,41 @@
             return parseInt(val);
         }
 
-        function updateMap() {
+        function animateStationUnlock(group) {
+            if (group.unlockAnimationTimeout) {
+                clearTimeout(group.unlockAnimationTimeout);
+            }
+
+            requestAnimationFrame(() => {
+                group.classList.add('station-unlocking', 'station-unlock-enter');
+
+                requestAnimationFrame(() => {
+                    group.classList.remove('station-unlock-enter');
+                });
+            });
+
+            group.unlockAnimationTimeout = setTimeout(() => {
+                group.classList.remove('station-unlocking', 'station-unlock-enter');
+                group.unlockAnimationTimeout = null;
+            }, 2900);
+        }
+
+        function getPendingUnlockStation(progress) {
+            const storedValue = localStorage.getItem('mrt_map_progress_snapshot');
+            localStorage.removeItem('mrt_map_progress_snapshot');
+
+            if (storedValue === null) return null;
+
+            const previousProgress = parseInt(storedValue, 10);
+            if (Number.isNaN(previousProgress) || progress <= previousProgress || progress >= stations.length) {
+                return null;
+            }
+
+            const unlockedStation = stations[progress];
+            return unlockedStation ? unlockedStation.id : null;
+        }
+
+        function updateMap(unlockedStationId = null) {
             const progress = getProgress();
             
             stations.forEach((station, index) => {
@@ -254,6 +346,7 @@
 
                 if (index < progress) {
                     // Visited / Completed
+                    group.classList.remove('station-hidden', 'station-unlock-enter', 'station-unlocking');
                     glow.style.display = 'none';
                     outerDot.setAttribute('fill', '#D1FAE5'); 
                     outerDot.setAttribute('stroke', '#10B981'); 
@@ -264,6 +357,7 @@
                     stationName.style.fontWeight = '700';
                 } else if (index === progress) {
                     // Active (Current Next)
+                    group.classList.remove('station-hidden');
                     glow.style.display = 'block';
                     outerDot.setAttribute('fill', '#FFFFFF');
                     outerDot.setAttribute('stroke', '#FF9E1B');
@@ -272,8 +366,16 @@
                     badgeText.setAttribute('fill', '#FFFFFF');
                     stationName.setAttribute('fill', '#FF9E1B'); 
                     stationName.style.fontWeight = '800';
+
+                    if (station.id === unlockedStationId) {
+                        animateStationUnlock(group);
+                    } else if (!group.classList.contains('station-unlocking')) {
+                        group.classList.remove('station-unlock-enter');
+                    }
                 } else {
                     // Locked
+                    group.classList.add('station-hidden');
+                    group.classList.remove('station-unlock-enter', 'station-unlocking');
                     glow.style.display = 'none';
                     outerDot.setAttribute('fill', '#1E293B'); 
                     outerDot.setAttribute('stroke', '#475569'); 
@@ -318,6 +420,7 @@
                 const progress = getProgress();
                 if (index <= progress) {
                     // Unlocked or visited
+                    localStorage.setItem('mrt_map_progress_snapshot', String(progress));
                     window.location.href = station.file;
                 } else {
                     // Locked
@@ -343,12 +446,16 @@
 
         function resetProgress() {
             localStorage.setItem('mrt_progress', '0');
+            localStorage.removeItem('mrt_map_progress_snapshot');
             updateMap();
             showToast('🔄 Map progress has been reset!');
         }
 
         // Initialize map on page load
-        window.addEventListener('DOMContentLoaded', updateMap);
+        window.addEventListener('DOMContentLoaded', () => {
+            const unlockedStationId = getPendingUnlockStation(getProgress());
+            updateMap(unlockedStationId);
+        });
     </script>
 </body>
 </html>
