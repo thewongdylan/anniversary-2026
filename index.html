@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Circle Line Explorer</title>
+    <title>Anniversary 2026</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -97,36 +97,51 @@
             background: #334155;
             border-radius: 3px;
         }
+        .app-shell {
+            height: 100dvh;
+            max-height: 100dvh;
+            overflow: hidden;
+        }
+        .map-svg {
+            max-height: min(42dvh, 340px);
+        }
+        @media (max-height: 760px) {
+            .map-svg {
+                max-height: min(38dvh, 290px);
+            }
+        }
     </style>
 </head>
-<body class="bg-white text-black font-sans antialiased selection:bg-orange-500/30 selection:text-orange-200">
+<body class="overflow-hidden bg-white text-black font-sans antialiased selection:bg-orange-500/30 selection:text-orange-200">
     <!-- Main Mobile Container -->
-    <div class="max-w-md mx-auto min-h-screen bg-white flex flex-col justify-between shadow-2xl border-x border-slate-200/60 relative overflow-x-auto">
+    <div class="app-shell max-w-md mx-auto bg-white flex flex-col shadow-2xl border-x border-slate-200/60 relative overflow-hidden">
         
         <!-- Header Section -->
-        <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between">
+        <header class="bg-[#063e4d] border-b border-slate-200/20 px-4 py-3 z-50 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/30">
-                    <i class="fa-solid fa-train-subway text-orange-500 text-lg"></i>
+                <div class="w-9 h-9 rounded-full bg-orange-500/10 flex items-center justify-center border border-orange-500/30">
+                    <i class="fa-solid fa-train-subway text-orange-500 text-base"></i>
                 </div>
                 <div>
-                    <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-2">
-                        The First Anniversary of Dylan and Laura
+                    <h1 class="text-[15px] leading-tight font-bold tracking-tight text-white flex items-center gap-2">
+                        <!-- The First Anniversary of Dylan and Laura -->
+                        2026 First Anniversary Full Circle Line Adventure
                         <!-- <span class="bg-orange-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-black tracking-wide">CC</span> -->
                     </h1>
-                    <p class="text-[11px] text-slate-200 font-medium italic">You spin me right round baby right round</p>
+                    <!-- <p class="text-[11px] text-slate-200 font-medium">The First Anniversary of Dylan and Laura</p> -->
+                    <p class="text-[10px] text-slate-200 font-medium italic">We have come... full circle!</p>
                 </div>
             </div>
 
         </header>
 
         <!-- Main Map Area -->
-        <main class="flex-1 flex flex-col justify-center items-center py-6 relative">
+        <main class="flex-1 min-h-0 flex flex-col justify-center items-center px-3 py-2 relative overflow-hidden">
             <!-- <div class="w-full max-w-sm bg-slate-900/40 border border-slate-800/50 rounded-2xl p-3 shadow-inner relative"> -->
-            <div class="w-full flex justify-center">
+            <div class="w-full h-full flex items-center justify-center">
                 
                 <!-- SVG MRT Map -->
-                <svg viewBox="0 0 470 400" class="w-full h-auto drop-shadow-[0_0_15px_rgba(251,146,60,0.05)]" preserveAspectRatio="xMidYMid meet" style="max-height: 500px;">
+                <svg viewBox="0 0 470 400" class="map-svg w-full h-auto drop-shadow-[0_0_15px_rgba(251,146,60,0.05)]" preserveAspectRatio="xMidYMid meet">
                     <defs>
                         <!-- Glowing orange for active station -->
                         <filter id="glow-active" x="-30%" y="-30%" width="160%" height="160%">
@@ -212,7 +227,7 @@
                 </svg>
 
                 <!-- Helpful visual link legend overlay inside map container -->
-                <div class="absolute bottom-3 left-4 flex items-center space-x-2 text-[12px] text-black-400 px-2 py-1 rounded-md border border-slate-800/40 backdrop-blur-sm">
+                <div class="absolute bottom-1 left-4 flex items-center space-x-2 text-[11px] text-black-400 px-2 py-1 rounded-md border border-[#063e4d] backdrop-blur-sm">
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)]"></span>
                     <span>Visited</span>
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_5px_rgba(249,115,22,0.5)]"></span>
@@ -222,42 +237,38 @@
         </main>
 
         <!-- Bottom Informational Panel -->
-        <footer class="bg-white border-t border-slate-200/60 p-5 space-y-4">
+        <footer class="bg-white border-t border-slate-200/60 px-4 py-3 space-y-3">
             
             <!-- Instructions Card -->
-            <div id="instructions-card" class="bg-slate-950/50 rounded-xl p-3.5 border border-slate-800/50 flex items-start space-x-3 transition-all duration-300">
-                <div class="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-orange-500 border border-orange-500/20">
-                    <i class="fa-solid fa-compass text-sm"></i>
+            <div id="instructions-card" class="bg-[#063e4d] rounded-xl p-3 border border-[#063e4d]/50 flex items-start space-x-3 transition-all duration-300">
+                <div class="w-11 h-11 rounded-lg bg-orange-500/10 flex items-center justify-center flex-shrink-0 text-orange-500 border border-orange-500/20">
+                    <i class="fa-solid fa-compass text-base"></i>
                 </div>
                 <div class="flex-1 space-y-1">
                     <h3 class="text-xs font-bold text-slate-200">Current Objective</h3>
-                    <p class="text-[11px] text-slate-400 leading-relaxed">
-                        Navigate the Circle Line in sequence. Tap the active station <span id="next-station-badge" class="bg-orange-500 text-slate-950 px-1 py-0.2 rounded text-[9px] font-black tracking-wide">CC9</span> <strong id="next-station-name" class="text-orange-400">Paya Lebar</strong> to begin exploration.
+                    <p class="text-[10px] text-slate-200 leading-relaxed">
+                        Journey through the Circle Line in an anticlockwise manner! <br> Tap on the active station <span id="next-station-badge" class="bg-orange-500 text-slate-950 px-1 py-0.2 rounded text-[9px] font-black tracking-wide">CC9</span> <strong id="next-station-name" class="text-orange-400">Paya Lebar</strong> to proceed.
                     </p>
                 </div>
             </div>
 
-            <button onclick="resetProgress()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-slate-800/60 hover:bg-red-950/40 hover:text-red-400 border border-slate-700/50 hover:border-red-900/50 transition-all flex items-center gap-1" title="Reset Journey">
-                <i class="fa-solid fa-rotate-left"></i> Reset
-            </button>
-
             <!-- Celebration Card (Hidden initially) -->
-            <div id="celebration-card" class="hidden bg-emerald-950/20 rounded-xl p-4 border border-emerald-500/20 flex flex-col items-center text-center space-y-2.5 transition-all duration-300">
-                <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/30">
-                    <i class="fa-solid fa-trophy text-lg"></i>
+            <div id="celebration-card" class="hidden bg-emerald-950/20 rounded-xl p-3 border border-emerald-500/20 flex flex-col items-center text-center space-y-2 transition-all duration-300">
+                <div class="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/30">
+                    <i class="fa-solid fa-trophy text-base"></i>
                 </div>
                 <div class="space-y-1">
                     <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider">Line Fully Unlocked!</h3>
-                    <p class="text-[11px] text-emerald-500/80 leading-relaxed">
+                    <p class="text-[10px] text-emerald-500/80 leading-relaxed">
                         Congratulations! You have navigated all 5 key interchange stations of the Circle Line successfully. Re-explore any station by tapping on it!
                     </p>
                 </div>
             </div>
 
             <!-- Progress Indicator -->
-            <div class="space-y-2">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400 font-semibold">Adventure Progress</span>
+            <div class="space-y-1.5">
+                <div class="flex justify-between items-center text-[11px]">
+                    <span class="text-slate-500 font-semibold">Adventure Progress</span>
                     <span id="progress-text" class="text-orange-400 font-bold">0 of 5 Stations Visited</span>
                 </div>
                 <div class="w-full h-2.5 bg-slate-950 rounded-full overflow-hidden border border-slate-800/60 p-[1px]">
@@ -265,15 +276,11 @@
                 </div>
             </div>
 
-            <div class="text-[10px] text-center text-slate-500 font-medium">
-                Circle Line Explorer • Developed in 2026
+            <div class="pt-1 border-t border-slate-200/60 flex justify-between items-center text-[10px] text-slate-500 font-medium">
+                <span>© 2026 Dylan & Laura</span>
+                <button onclick="resetProgress()" class="text-orange-500 hover:text-orange-400 transition-colors duration-300 font-semibold text-[10px]">Reset Progress</button>
             </div>
         </footer>
-
-        <!-- Toast Notification system -->
-        <div id="toast" class="absolute bottom-24 left-1/2 transform -translate-x-1/2 translate-y-24 opacity-0 transition-all duration-500 ease-out bg-slate-950 text-slate-200 text-xs py-2.5 px-4 rounded-xl shadow-2xl border border-slate-800 flex items-center space-x-2 pointer-events-none z-50 whitespace-nowrap">
-            <span class="toast-msg font-medium">🔒 Station is locked!</span>
-        </div>
 
     </div>
 
@@ -429,19 +436,79 @@
             });
         });
 
-        function showToast(message) {
+        function hideToast() {
             const toast = document.getElementById('toast');
-            toast.querySelector('.toast-msg').textContent = message;
-            toast.classList.remove('translate-y-24', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-            
-            // Clear prior timeouts
+            toast.classList.remove('scale-100', 'opacity-100', 'pointer-events-auto');
+            toast.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+        }
+
+        function formatToastMessage(message) {
+            const template = document.createElement('template');
+            template.innerHTML = message;
+
+            const allowedTags = new Set(['B', 'STRONG', 'I', 'EM', 'BR']);
+
+            function sanitizeNode(node) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    return document.createTextNode(node.textContent);
+                }
+
+                if (node.nodeType !== Node.ELEMENT_NODE || !allowedTags.has(node.tagName)) {
+                    const fragment = document.createDocumentFragment();
+                    node.childNodes.forEach((child) => {
+                        fragment.appendChild(sanitizeNode(child));
+                    });
+                    return fragment;
+                }
+
+                const element = document.createElement(node.tagName.toLowerCase());
+                node.childNodes.forEach((child) => {
+                    element.appendChild(sanitizeNode(child));
+                });
+                return element;
+            }
+
+            const fragment = document.createDocumentFragment();
+            template.content.childNodes.forEach((node) => {
+                fragment.appendChild(sanitizeNode(node));
+            });
+
+            return fragment;
+        }
+
+        function showToast(message, options = {}) {
+            const { actionLabel = null, onAction = null, autoHide = true, duration = 2500 } = options;
+            const toast = document.getElementById('toast');
+            const actionButton = document.getElementById('toast-action');
+            const toastMessage = toast.querySelector('.toast-msg');
+
+            toastMessage.replaceChildren(formatToastMessage(message));
+            actionButton.onclick = null;
+
+            if (actionLabel && typeof onAction === 'function') {
+                actionButton.textContent = actionLabel;
+                actionButton.classList.remove('hidden');
+                toast.classList.remove('pointer-events-none');
+                toast.classList.add('pointer-events-auto');
+                actionButton.onclick = () => {
+                    onAction();
+                };
+            } else {
+                actionButton.classList.add('hidden');
+                toast.classList.remove('pointer-events-auto');
+                toast.classList.add('pointer-events-none');
+            }
+
+            toast.classList.remove('scale-95', 'opacity-0');
+            toast.classList.add('scale-100', 'opacity-100');
+
             if (window.toastTimeout) clearTimeout(window.toastTimeout);
-            
-            window.toastTimeout = setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-24', 'opacity-0');
-            }, 2500);
+
+            if (autoHide) {
+                window.toastTimeout = setTimeout(() => {
+                    hideToast();
+                }, duration);
+            }
         }
 
         function resetProgress() {
@@ -455,6 +522,20 @@
         window.addEventListener('DOMContentLoaded', () => {
             const unlockedStationId = getPendingUnlockStation(getProgress());
             updateMap(unlockedStationId);
+
+            if (localStorage.getItem('anniversary_welcome_acknowledged') !== 'true') {
+                showToast(
+                    '<b>Welcome to the 2026 First Anniversary Full Circle Line Adventure!</b><br><br>Today, we will embark on a journey through the <em>Circle Line</em>, solving puzzles, doing activities, eating yummy food, and enjoying our time along the way!<br><br>Tap on the first station <em>Paya Lebar (CC9)</em> to start your adventure!',
+                    {
+                        actionLabel: 'Continue',
+                        autoHide: false,
+                        onAction: () => {
+                            localStorage.setItem('anniversary_welcome_acknowledged', 'true');
+                            hideToast();
+                        }
+                    }
+                );
+            }
         });
     </script>
 </body>
