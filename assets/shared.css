@@ -5,6 +5,34 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: "Franklin Gothic";
+    src: url("fonts/FranklinGothic.ttf") format("truetype");
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Karnak Condensed";
+    src: url("fonts/NYTKarnakCondensed.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
 .font-lta {
     font-family: "LTA Identity", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+
+.font-franklin {
+    font-family: "Franklin Gothic", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.font-karnak{
+    font-family: "Karnak Condensed", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.app-shell {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+}
+
