@@ -7,6 +7,7 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/shared.css" rel="stylesheet">
     <style>
         @keyframes pulse {
             0%, 100% { r: 8; opacity: 0.8; }
@@ -123,7 +124,7 @@
                     <i class="fa-solid fa-train-subway text-orange-500 text-base"></i>
                 </div>
                 <div>
-                    <h1 class="text-[15px] leading-tight font-bold tracking-tight text-white flex items-center gap-2">
+                    <h1 class="font-lta text-[15px] leading-tight font-bold tracking-tight text-white flex items-center gap-2">
                         <!-- The First Anniversary of Dylan and Laura -->
                         2026 First Anniversary Full Circle Line Adventure
                         <!-- <span class="bg-orange-500 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-black tracking-wide">CC</span> -->
@@ -156,7 +157,7 @@
                     <!-- Stations Group -->
                     
                     <!-- Station 1: Paya Lebar (CC9) -->
-                    <g id="station-paya_lebar" class="station-group group transition-all duration-300" data-id="paya_lebar" data-index="0">
+                    <g id="station-paya_lebar" class="station-group group transition-all duration-300" data-id="paya_lebar" data-index="0" transform="translate(4.47 -47.20)">
                         <circle class="unlock-flash" cx="355" cy="235" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <!-- Active Glow -->
                         <circle class="glow pulse-glow" cx="355" cy="235" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
@@ -167,62 +168,62 @@
                         
                         <!-- Badge -->
                         <rect class="badge-bg transition-colors duration-300" x="367" y="227" width="34" height="16" rx="4" fill="#334155" />
-                        <text class="badge-text font-sans font-black" x="384" y="238" font-size="9" text-anchor="middle" fill="#64748B">CC9</text>
+                        <text class="badge-text font-lta font-black" x="384" y="238" font-size="9" text-anchor="middle" fill="#64748B">CC9</text>
                         
                         <!-- Label -->
-                        <text class="station-name font-sans font-bold transition-colors duration-300" x="375" y="257" font-size="12" text-anchor="start" fill="#475569">Paya Lebar</text>
+                        <text class="station-name font-lta font-bold transition-colors duration-300" x="375" y="257" font-size="12" text-anchor="start" fill="#475569">Paya Lebar</text>
                     </g>
                     
                     <!-- Station 2: MacPherson (CC10) -->
-                    <g id="station-macpherson" class="station-group group transition-all duration-300" data-id="macpherson" data-index="1">
+                    <g id="station-macpherson" class="station-group group transition-all duration-300" data-id="macpherson" data-index="1" transform="translate(-10.12 -35.17)">
                         <circle class="unlock-flash" cx="357" cy="176" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="357" cy="176" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="357" cy="176" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="357" cy="176" r="5" fill="#475569" />
                         
                         <rect class="badge-bg transition-colors duration-300" x="369" y="168" width="34" height="16" rx="4" fill="#334155" />
-                        <text class="badge-text font-sans font-black" x="386" y="179" font-size="9" text-anchor="middle" fill="#64748B">CC10</text>
+                        <text class="badge-text font-lta font-black" x="386" y="179" font-size="9" text-anchor="middle" fill="#64748B">CC10</text>
                         
-                        <text class="station-name font-sans font-bold transition-colors duration-300" x="380" y="198" font-size="12" text-anchor="start" fill="#475569">MacPherson</text>
+                        <text class="station-name font-lta font-bold transition-colors duration-300" x="380" y="198" font-size="12" text-anchor="start" fill="#475569">MacPherson</text>
                     </g>
 
                     <!-- Station 3: Serangoon (CC13) -->
-                    <g id="station-serangoon" class="station-group group transition-all duration-300" data-id="serangoon" data-index="2">
+                    <g id="station-serangoon" class="station-group group transition-all duration-300" data-id="serangoon" data-index="2" transform="translate(-39.83 -27.88)">
                         <circle class="unlock-flash" cx="319" cy="101" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="319" cy="101" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="319" cy="101" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="319" cy="101" r="5" fill="#475569" />
                         
-                        <rect class="badge-bg transition-colors duration-300" x="331" y="93" width="34" height="16" rx="4" fill="#334155" />
-                        <text class="badge-text font-sans font-black" x="348" y="104" font-size="9" text-anchor="middle" fill="#64748B">CC13</text>
+                        <rect class="badge-bg transition-colors duration-300" x="331" y="82" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-lta font-black" x="348" y="93" font-size="9" text-anchor="middle" fill="#64748B">CC13</text>
                         
-                        <text class="station-name font-sans font-bold transition-colors duration-300" x="369" y="105" font-size="12" text-anchor="start" fill="#475569">Serangoon</text>
+                        <text class="station-name font-lta font-bold transition-colors duration-300" x="369" y="93" font-size="12" text-anchor="start" fill="#475569">Serangoon</text>
                     </g>
 
                     <!-- Station 4: Buona Vista (CC22) -->
-                    <g id="station-buona_vista" class="station-group group transition-all duration-300" data-id="buona_vista" data-index="3">
+                    <g id="station-buona_vista" class="station-group group transition-all duration-300" data-id="buona_vista" data-index="3" transform="translate(-5 -35)">
                         <circle class="unlock-flash" cx="85" cy="235" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="85" cy="235" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="85" cy="235" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="85" cy="235" r="5" fill="#475569" />
                         
                         <rect class="badge-bg transition-colors duration-300" x="39" y="227" width="34" height="16" rx="4" fill="#334155" />
-                        <text class="badge-text font-sans font-black" x="56" y="238" font-size="9" text-anchor="middle" fill="#64748B">CC22</text>
+                        <text class="badge-text font-lta font-black" x="56" y="238" font-size="9" text-anchor="middle" fill="#64748B">CC22</text>
                         
-                        <text class="station-name font-sans font-bold transition-colors duration-300" x="82" y="258" font-size="12" text-anchor="end" fill="#475569">Buona Vista</text>
+                        <text class="station-name font-lta font-bold transition-colors duration-300" x="75" y="258" font-size="12" text-anchor="end" fill="#475569">Buona Vista</text>
                     </g>
 
                     <!-- Station 5: Marina Bay (CC33) -->
-                    <g id="station-marina_bay" class="station-group group transition-all duration-300" data-id="marina_bay" data-index="4">
+                    <g id="station-marina_bay" class="station-group group transition-all duration-300" data-id="marina_bay" data-index="4" transform="translate(-22.12 10.56)">
                         <circle class="unlock-flash" cx="290" cy="321" r="24" fill="#FF9E1B" fill-opacity="0.95" />
                         <circle class="glow pulse-glow" cx="290" cy="321" r="12" fill="#FF9E1B" fill-opacity="0.35" filter="url(#glow-active)" style="display: none;" />
                         <circle class="outer-dot" cx="290" cy="321" r="8" fill="white" stroke="#1e293b" stroke-width="1.5" />
                         <circle class="inner-dot" cx="290" cy="321" r="5" fill="#475569" />
                         
-                        <rect class="badge-bg transition-colors duration-300" x="302" y="313" width="34" height="16" rx="4" fill="#334155" />
-                        <text class="badge-text font-sans font-black" x="319" y="324" font-size="9" text-anchor="middle" fill="#64748B">CC33</text>
+                        <rect class="badge-bg transition-colors duration-300" x="302" y="323" width="34" height="16" rx="4" fill="#334155" />
+                        <text class="badge-text font-lta font-black" x="319" y="334" font-size="9" text-anchor="middle" fill="#64748B">CC33</text>
                         
-                        <text class="station-name font-sans font-bold transition-colors duration-300" x="340" y="325" font-size="12" text-anchor="start" fill="#475569">Marina Bay</text>
+                        <text class="station-name font-lta font-bold transition-colors duration-300" x="340" y="335" font-size="12" text-anchor="start" fill="#475569">Marina Bay</text>
                     </g>
                 </svg>
 
@@ -245,9 +246,9 @@
                     <i class="fa-solid fa-compass text-base"></i>
                 </div>
                 <div class="flex-1 space-y-1">
-                    <h3 class="text-xs font-bold text-slate-200">Current Objective</h3>
+                    <h3 class="font-lta text-xs font-bold text-slate-200">Current Objective</h3>
                     <p class="text-[10px] text-slate-200 leading-relaxed">
-                        Journey through the Circle Line in an anticlockwise manner! <br> Tap on the active station <span id="next-station-badge" class="bg-orange-500 text-slate-950 px-1 py-0.2 rounded text-[9px] font-black tracking-wide">CC9</span> <strong id="next-station-name" class="text-orange-400">Paya Lebar</strong> to proceed.
+                        Journey through the Circle Line in an anticlockwise manner! <br> Tap on the active station <span id="next-station-badge" class="font-lta bg-orange-500 text-slate-950 px-1 py-0.2 rounded text-[9px] font-black tracking-wide">CC9</span> <strong id="next-station-name" class="font-lta text-orange-400">Paya Lebar</strong> to proceed.
                     </p>
                 </div>
             </div>
@@ -258,7 +259,7 @@
                     <i class="fa-solid fa-trophy text-base"></i>
                 </div>
                 <div class="space-y-1">
-                    <h3 class="text-xs font-black text-emerald-400 uppercase tracking-wider">Line Fully Unlocked!</h3>
+                    <h3 class="font-lta text-xs font-black text-emerald-400 uppercase tracking-wider">Line Fully Unlocked!</h3>
                     <p class="text-[10px] text-emerald-500/80 leading-relaxed">
                         Congratulations! You have navigated all 5 key interchange stations of the Circle Line successfully. Re-explore any station by tapping on it!
                     </p>
@@ -282,6 +283,16 @@
             </div>
         </footer>
 
+    </div>
+
+    <div id="toast" class="fixed inset-x-4 bottom-4 z-[100] max-w-md mx-auto bg-[#063e4d] text-slate-100 border border-orange-500/30 rounded-2xl shadow-2xl shadow-slate-950/30 px-4 py-3 flex items-start gap-3 scale-95 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="mt-0.5 text-orange-400 flex-shrink-0">
+            <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+            <div class="toast-msg text-[11px] leading-relaxed text-slate-100"></div>
+            <button id="toast-action" type="button" class="hidden mt-3 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 text-[11px] font-bold transition-colors duration-200"></button>
+        </div>
     </div>
 
     <!-- Map Logic -->
@@ -438,6 +449,8 @@
 
         function hideToast() {
             const toast = document.getElementById('toast');
+            toast.classList.remove('top-1/2', '-translate-y-1/2');
+            toast.classList.add('bottom-4');
             toast.classList.remove('scale-100', 'opacity-100', 'pointer-events-auto');
             toast.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
         }
@@ -477,13 +490,21 @@
         }
 
         function showToast(message, options = {}) {
-            const { actionLabel = null, onAction = null, autoHide = true, duration = 2500 } = options;
+            const { actionLabel = null, onAction = null, autoHide = true, duration = 2500, centered = false } = options;
             const toast = document.getElementById('toast');
             const actionButton = document.getElementById('toast-action');
             const toastMessage = toast.querySelector('.toast-msg');
 
             toastMessage.replaceChildren(formatToastMessage(message));
             actionButton.onclick = null;
+
+            if (centered) {
+                toast.classList.remove('bottom-4');
+                toast.classList.add('top-1/2', '-translate-y-1/2');
+            } else {
+                toast.classList.remove('top-1/2', '-translate-y-1/2');
+                toast.classList.add('bottom-4');
+            }
 
             if (actionLabel && typeof onAction === 'function') {
                 actionButton.textContent = actionLabel;
@@ -525,8 +546,9 @@
 
             if (localStorage.getItem('anniversary_welcome_acknowledged') !== 'true') {
                 showToast(
-                    '<b>Welcome to the 2026 First Anniversary Full Circle Line Adventure!</b><br><br>Today, we will embark on a journey through the <em>Circle Line</em>, solving puzzles, doing activities, eating yummy food, and enjoying our time along the way!<br><br>Tap on the first station <em>Paya Lebar (CC9)</em> to start your adventure!',
+                    '<b>Welcome to the 2026 First Anniversary Full Circle Line Adventure!</b><br><br>Today, we will embark on a journey through the Circle Line, solving puzzles, doing activities, eating yummy food, and enjoying our time along the way!<br><br>Tap on the first station <em>Paya Lebar (CC9)</em> to start your adventure!',
                     {
+                        centered: true,
                         actionLabel: 'Continue',
                         autoHide: false,
                         onAction: () => {
