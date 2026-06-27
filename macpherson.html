@@ -104,7 +104,7 @@
         }
 
         function unlockNext() {
-            const currentProgress = parseInt(localStorage.getItem('mrt_progress') || '0');
+            const currentProgress = parseInt(localStorage.getItem('mrt_progress') || '1');
             if (currentProgress === 1) {
                 localStorage.setItem('mrt_progress', '2');
             }
@@ -585,7 +585,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const progress = parseInt(localStorage.getItem('mrt_progress') || '0');
+            const progress = parseInt(localStorage.getItem('mrt_progress') || '1');
             if (progress > 1) {
                 // Show solved wordle
                 const correctBtn = document.getElementById('correct-opt');
@@ -598,11 +598,7 @@
                         b.classList.add('pointer-events-none', 'opacity-40');
                     }
                 });
-
-                const unlockBtn = document.getElementById('unlock-btn');
-                unlockBtn.removeAttribute('disabled');
-                unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Return to Line Map';
+                enableUnlockBtn()
             }
 
             if (localStorage.getItem('macpherson_welcome_acknowledged') !== 'true') {

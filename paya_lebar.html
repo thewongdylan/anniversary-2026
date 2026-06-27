@@ -7,13 +7,56 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/shared.css" rel="stylesheet">
-</head>
-<body class="overflow-hidden bg-white text-black font-sans antialiased">
-    <!-- Main Mobile Container -->
-    <div class="app-shell max-w-md mx-auto bg-white flex flex-col justify-between shadow-2xl border-x border-slate-200/60 relative overflow-hidden">
+    <style>
+        /* Toast fade */
+        .toast-enter { opacity: 0; transform: translateY(-20px); transition: all 0.3s; }
+        .toast-enter-active { opacity: 1; transform: translateY(0); }
         
-        <!-- Header -->
-        <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between">
+        /* Crossword specific styling */
+        .cw-cell {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .cw-cell:focus {
+            background-color: #fef08a; /* yellow-200 */
+            border-color: #ca8a04; /* yellow-600 */
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        /* Highlight for the vertical hidden word */
+        .cw-highlight {
+            background-color: #ffedd5; /* orange-100 */
+            border-color: #f97316; /* orange-500 */
+            color: #c2410c; /* orange-800 */
+        }
+        
+        /* Hide scrollbar for a cleaner look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="overflow-hidden bg-slate-50 text-black font-sans antialiased">
+    <div id="toast" class="fixed inset-x-4 bottom-4 z-[100] max-w-[22rem] mx-auto bg-[#063e4d] text-slate-100 border border-orange-500/30 rounded-2xl shadow-2xl shadow-slate-950/30 px-4 py-3 flex items-start gap-3 scale-95 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="mt-0.5 text-orange-400 flex-shrink-0">
+            <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+            <div class="toast-msg text-[12px] leading-relaxed text-slate-100"></div>
+            <button id="toast-action" type="button" class="hidden mt-3 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 text-[11px] font-bold transition-colors duration-200"></button>
+        </div>
+    </div>
+
+    <div class="app-shell h-screen max-w-md mx-auto bg-white flex flex-col justify-between shadow-2xl border-x border-slate-200/60 relative overflow-hidden">
+        
+        <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between shadow-md">
             <button onclick="goBack()" class="text-sm font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1">
                 <i class="fa-solid fa-chevron-left"></i> Map
             </button>
@@ -22,120 +65,51 @@
                 <span class="font-lta bg-[#009645] text-white text-[10px] px-1.5 py-0.5 rounded font-black tracking-wide">EW8</span>
                 <span class="font-lta text-xs font-bold text-slate-200">Paya Lebar</span>
             </div>
-            <div class="w-10"></div> <!-- spacer -->
-        </header>
+            <div class="w-10"></div> </header>
 
-        <!-- Main Content -->
-        <main class="flex-1 px-5 py-6 space-y-6">
-            
-            <!-- Hero Card -->
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500/10 via-slate-900 to-emerald-500/5 border border-slate-800/80 p-5 space-y-4">
-                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl"></div>
-                
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] uppercase font-black tracking-wider text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20" font-lta>Stage 1: Eastern Hub</span>
-                    <i class="fa-solid fa-map-location-dot text-orange-500 text-lg"></i>
-                </div>
-                
-                <div class="space-y-1">
-                    <h2 class="font-lta text-xl font-extrabold text-white">Welcome to Paya Lebar</h2>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Paya Lebar is a bustling interchange station connecting the Circle Line with the East West Line. Historically a rural swamp, it has evolved into a thriving commercial hub rich in cultural heritage.
-                    </p>
-                </div>
-            </div>
+        <div id='crossword-container' class="hidden flex-1 overflow-y-auto no-scrollbar flex flex-col relative bg-slate-50 pb-2">
 
-            <!-- Quiz Card -->
-            <div class="bg-slate-950/40 border border-slate-800/60 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20">
-                        <i class="fa-solid fa-circle-question text-sm"></i>
+            <header class="flex flex-col items-center justify-center p-4 bg-white border-b border-slate-200 shadow-sm z-10 sticky top-0">
+                <h1 class="text-3xl font-karnak font-black tracking-wider text-slate-800">CROSSWORD</h1>
+                <p class="text-xs text-slate-500 font-medium mt-1">Solve to reveal the hidden word!</p>
+            </header>
+
+            <main class="w-full flex justify-center mt-6 px-2 overflow-x-auto no-scrollbar">
+                <div id="board" class="flex flex-col gap-1 pb-4 min-w-max">
                     </div>
-                    <h3 class="font-lta text-xs font-black uppercase tracking-wider text-slate-200">Station Trivia Challenge</h3>
+            </main>
+
+            <div class="mt-2 px-5 pb-6 h-20 flex flex-col justify-center relative">
+                <div id="hint-box" class="absolute inset-x-5 bg-white border-2 border-orange-200 shadow-md rounded-xl p-4 transition-all duration-300 opacity-0 transform translate-y-2 pointer-events-none z-10">
+                    <p id="active-hint-text" class="text-sm text-slate-800 font-medium leading-relaxed text-center"></p>
                 </div>
                 
-                <p class="text-xs text-slate-300 leading-relaxed font-semibold">
-                    Do you know what the Malay name "Paya Lebar" translates to in English?
+                <p id="default-hint-msg" class="text-xs text-slate-400 text-center transition-all duration-300 absolute inset-x-0">
+                    Tap on any tile to reveal its clue
                 </p>
-
-                <!-- Options Grid -->
-                <div class="space-y-2.5 pt-2">
-                    <button onclick="checkAnswer(this, false, 'Broad Swamp is correct! Historically, the area was a huge swampy land near the Geylang River.')" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>A) Red Clay Hill</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                    <button id="correct-opt" onclick="checkAnswer(this, true, 'Spot on! \'Paya\' means swamp, and \'Lebar\' means broad or wide. It is indeed the Broad Swamp!')" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>B) Broad Swamp</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                    <button onclick="checkAnswer(this, false, 'Broad Swamp is correct! Historically, the area was a huge swampy land near the Geylang River.')" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>C) Sandy Valley</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                    <button onclick="checkAnswer(this, false, 'Broad Swamp is correct! Historically, the area was a huge swampy land near the Geylang River.')" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>D) Coconut Grove</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                </div>
             </div>
-        </main>
 
-        <!-- Bottom Action Bar -->
-        <footer class="bg-white border-t border-slate-200/60 p-5 flex flex-col space-y-3">
-            <button id="unlock-btn" disabled onclick="unlockNext()" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs bg-slate-800 border border-slate-700 text-slate-500 cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-950/10">
-                <i class="fa-solid fa-lock text-[10px]"></i> Answer Quiz to Unlock MacPherson
-            </button>
-            <button onclick="goBack()" class="w-full py-3 rounded-xl font-bold text-xs bg-slate-950/40 hover:bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-arrow-left"></i> Back to Line Map
+        </div>
+
+        <footer class="bg-white border-t border-slate-200/60 p-5 flex flex-col space-y-3 shrink-0 relative z-20 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+            <button id="unlock-btn" disabled onclick="unlockNext()" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs bg-slate-800 border border-slate-700 text-slate-500 cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10">
+                <i class="fa-solid fa-lock text-[10px]"></i> Solve to unlock next station
             </button>
         </footer>
 
     </div>
 
     <script>
-        let isCorrectAnswered = false;
-
+        // Utility functions
         function goBack() {
-            window.location.href = 'index.html';
+            window.location.href = 'index.html'; 
         }
 
-        function checkAnswer(btn, isCorrect, feedback) {
-            if (isCorrectAnswered) return; // only allow one correct pick
-            
-            // Disable all buttons
-            document.querySelectorAll('.option-btn').forEach(b => {
-                b.classList.add('pointer-events-none', 'opacity-60');
-            });
-            
-            if (isCorrect) {
-                isCorrectAnswered = true;
-                btn.classList.remove('opacity-60', 'border-slate-800', 'bg-slate-900/50');
-                btn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                btn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
-                
-                // Enable unlock button
-                const unlockBtn = document.getElementById('unlock-btn');
-                unlockBtn.removeAttribute('disabled');
-                unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Continue Journey to MacPherson';
-            } else {
-                btn.classList.remove('opacity-60', 'border-slate-800', 'bg-slate-900/50');
-                btn.classList.add('border-red-500/80', 'bg-red-950/20', 'text-red-400');
-                btn.querySelector('i').className = 'fa-solid fa-circle-xmark text-red-500';
-                
-                // Highlight the correct one
-                setTimeout(() => {
-                    const correctBtn = document.getElementById('correct-opt');
-                    correctBtn.classList.remove('opacity-60', 'border-slate-800', 'bg-slate-900/50');
-                    correctBtn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                    correctBtn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
-                    
-                    const unlockBtn = document.getElementById('unlock-btn');
-                    unlockBtn.removeAttribute('disabled');
-                    unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                    unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Continue Journey to MacPherson';
-                }, 1000);
-            }
+        function enableUnlockBtn() {
+            const unlockBtn = document.getElementById('unlock-btn');
+            unlockBtn.removeAttribute('disabled');
+            unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
+            unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Continue on your journey!';
         }
 
         function unlockNext() {
@@ -146,27 +120,334 @@
             goBack();
         }
 
-        // Handle case where it was already unlocked
-        window.addEventListener('DOMContentLoaded', () => {
-            const progress = parseInt(localStorage.getItem('mrt_progress') || '0');
-            if (progress > 0) {
-                // Auto-solve the quiz visual
-                const correctBtn = document.getElementById('correct-opt');
-                correctBtn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                correctBtn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
-                isCorrectAnswered = true;
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('top-1/2', '-translate-y-1/2', 'scale-100', 'opacity-100', 'pointer-events-auto');
+            toast.classList.add('bottom-4', 'scale-95', 'opacity-0', 'pointer-events-none');
+        }
+
+        function showToast(message, options = {}) {
+            const { actionLabel = null, onAction = null, autoHide = true, duration = 2500, centered = false } = options;
+            const toast = document.getElementById('toast');
+            const actionButton = document.getElementById('toast-action');
+            const toastMessage = toast.querySelector('.toast-msg');
+
+            toastMessage.innerHTML = message; 
+            actionButton.onclick = null;
+
+            if (centered) {
+                toast.classList.remove('bottom-4');
+                toast.classList.add('top-1/2', '-translate-y-1/2');
+            } else {
+                toast.classList.remove('top-1/2', '-translate-y-1/2');
+                toast.classList.add('bottom-4');
+            }
+
+            if (actionLabel && typeof onAction === 'function') {
+                actionButton.textContent = actionLabel;
+                actionButton.classList.remove('hidden');
+                toast.classList.remove('pointer-events-none');
+                toast.classList.add('pointer-events-auto');
+                actionButton.onclick = () => {
+                    onAction();
+                };
+            } else {
+                actionButton.classList.add('hidden');
+                toast.classList.remove('pointer-events-auto');
+                toast.classList.add('pointer-events-none');
+            }
+
+            toast.classList.remove('scale-95', 'opacity-0');
+            toast.classList.add('scale-100', 'opacity-100');
+
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+
+            if (autoHide) {
+                window.toastTimeout = setTimeout(() => {
+                    hideToast();
+                }, duration);
+            }
+        }
+
+        // --- Crossword Logic ---
+        const CROSSWORD_DATA = [
+            { word: "UNOPARTY",   offset: 2, hint: "Chaotic card game (fun for 6-14 players)" },
+            { word: "LESHRIMP",      offset: 2, hint: "Where we ate for our first date" },
+            { word: "MONTIGO",    offset: 4, hint: "Our favourite resort destination" },
+            { word: "XOKITTY",  offset: 1, hint: "Romance series we binge watched" },
+            { word: "NITORI",      offset: 2, hint: "Store that sells super cooling pillows" },
+            { word: "BALATRO",    offset: 5, hint: "Chaotic card game (jokers galore)" },
+            { word: "HOC",      offset: 4, hint: "Underwood's TV series, for short" },
+            { word: "HOAGIES",  offset: 4, hint: "Our Buddy who makes excellent Rosti"},
+            { word: "MATILDA",   offset: 3, hint: "Our dance instructor's name" },
+            { word: "CROCHET",  offset: 1, hint: "The craft we engage in most often" }
+        ];
+
+        const TARGET_COL = 5; 
+        const STORAGE_KEY = 'paya-lebar-crossword-state';
+        
+        let boardState = Array(CROSSWORD_DATA.length).fill(""); 
+        let isSolved = false;
+
+        function saveGameState() {
+            const state = { boardState, isSolved };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function loadGameState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return false;
+                const state = JSON.parse(raw);
+                if (state && Array.isArray(state.boardState)) {
+                    boardState = state.boardState;
+                    isSolved = state.isSolved;
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Could not load game state');
+            }
+            return false;
+        }
+
+        // --- Hint Visibility Logic ---
+        function showActiveHint(r) {
+            if (isSolved) return; 
+            const hintBox = document.getElementById('hint-box');
+            const hintText = document.getElementById('active-hint-text');
+            const defaultMsg = document.getElementById('default-hint-msg');
+
+            hintText.innerHTML = `<span class="text-orange-500 font-black mr-2">${r + 1}.</span> ${CROSSWORD_DATA[r].hint}`;
+            
+            hintBox.classList.remove('opacity-0', 'translate-y-2');
+            hintBox.classList.add('opacity-100', 'translate-y-0');
+            
+            defaultMsg.classList.add('opacity-0');
+        }
+
+        function hideActiveHint() {
+            const hintBox = document.getElementById('hint-box');
+            const defaultMsg = document.getElementById('default-hint-msg');
+
+            hintBox.classList.remove('opacity-100', 'translate-y-0');
+            hintBox.classList.add('opacity-0', 'translate-y-2');
+
+            if (!isSolved) {
+                defaultMsg.classList.remove('opacity-0');
+            }
+        }
+
+        function setupCrosswordUI() {
+            const boardEl = document.getElementById('board');
+            boardEl.innerHTML = '';
+
+            // Generate Grid
+            CROSSWORD_DATA.forEach((rowObj, r) => {
+                if (!boardState[r]) {
+                    boardState[r] = Array(rowObj.word.length).fill("");
+                }
+
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex gap-0 items-center';
+
+                // Add row number label
+                const label = document.createElement('div');
+                label.className = 'w-5 text-[10px] font-bold text-slate-400 text-right mr-1 select-none';
+                label.textContent = r + 1;
+                rowDiv.appendChild(label);
+
+                // Add invisible spacer blocks
+                for (let i = 0; i < rowObj.offset; i++) {
+                    const spacer = document.createElement('div');
+                    spacer.className = 'w-7 h-7 sm:w-8 sm:h-8';
+                    rowDiv.appendChild(spacer);
+                }
+
+                // Add input cells for the word
+                for (let c = 0; c < rowObj.word.length; c++) {
+                    const isTargetCol = (rowObj.offset + c) === TARGET_COL;
+                    
+                    const cell = document.createElement('input');
+                    cell.type = 'text';
+                    cell.maxLength = 1;
+                    cell.id = `cell-${r}-${c}`;
+                    
+                    let cellClass = 'cw-cell w-7 h-7 sm:w-8 sm:h-8 border-2 rounded text-sm sm:text-base bg-white shadow-sm ';
+                    
+                    if (isTargetCol) {
+                        cellClass += 'cw-highlight ';
+                    } else {
+                        cellClass += 'border-slate-300 text-slate-800 focus:border-slate-500 ';
+                    }
+
+                    cell.className = cellClass;
+                    cell.value = boardState[r][c] || "";
+                    
+                    if (isSolved) cell.disabled = true;
+
+                    // Event Listeners for typing and navigation
+                    cell.addEventListener('input', (e) => handleInput(r, c, e));
+                    cell.addEventListener('keydown', (e) => handleKeyDown(r, c, e));
+                    
+                    // Focus logic for dynamic hints
+                    cell.addEventListener('focus', () => showActiveHint(r));
+                    cell.addEventListener('blur', () => {
+                        // Small delay to check if focus just shifted to another crossword cell
+                        setTimeout(() => {
+                            if (!document.activeElement.classList.contains('cw-cell')) {
+                                hideActiveHint();
+                            }
+                        }, 50);
+                    });
+
+                    rowDiv.appendChild(cell);
+                }
                 
-                // Disable other options nicely
-                document.querySelectorAll('.option-btn').forEach(b => {
-                    if (b !== correctBtn) {
-                        b.classList.add('pointer-events-none', 'opacity-40');
+                boardEl.appendChild(rowDiv);
+            });
+        }
+
+        function handleInput(r, c, e) {
+            let val = e.target.value.toUpperCase();
+            if (val && !/^[A-Z]$/.test(val)) {
+                e.target.value = '';
+                return;
+            }
+            
+            e.target.value = val;
+            boardState[r][c] = val;
+            saveGameState();
+
+            if (val && c < CROSSWORD_DATA[r].word.length - 1) {
+                const nextCell = document.getElementById(`cell-${r}-${c + 1}`);
+                if (nextCell) nextCell.focus();
+            }
+
+            checkWin();
+        }
+
+        function handleKeyDown(r, c, e) {
+            if (e.key === 'Backspace' && e.target.value === '') {
+                e.preventDefault();
+                if (c > 0) {
+                    const prevCell = document.getElementById(`cell-${r}-${c - 1}`);
+                    if (prevCell) {
+                        prevCell.focus();
+                        prevCell.value = '';
+                        boardState[r][c - 1] = '';
+                        saveGameState();
+                    }
+                }
+            }
+            else if (e.key === 'ArrowLeft' && c > 0) {
+                document.getElementById(`cell-${r}-${c - 1}`).focus();
+            }
+            else if (e.key === 'ArrowRight' && c < CROSSWORD_DATA[r].word.length - 1) {
+                document.getElementById(`cell-${r}-${c + 1}`).focus();
+            }
+            else if (e.key === 'ArrowDown' && r < CROSSWORD_DATA.length - 1) {
+                const nextRowOffset = CROSSWORD_DATA[r+1].offset;
+                const currentCol = CROSSWORD_DATA[r].offset + c;
+                const targetC = currentCol - nextRowOffset;
+                
+                if (targetC >= 0 && targetC < CROSSWORD_DATA[r+1].word.length) {
+                    document.getElementById(`cell-${r+1}-${targetC}`).focus();
+                } else {
+                    document.getElementById(`cell-${r+1}-0`).focus(); 
+                }
+            }
+            else if (e.key === 'ArrowUp' && r > 0) {
+                const prevRowOffset = CROSSWORD_DATA[r-1].offset;
+                const currentCol = CROSSWORD_DATA[r].offset + c;
+                const targetC = currentCol - prevRowOffset;
+                
+                if (targetC >= 0 && targetC < CROSSWORD_DATA[r-1].word.length) {
+                    document.getElementById(`cell-${r-1}-${targetC}`).focus();
+                } else {
+                    document.getElementById(`cell-${r-1}-0`).focus();
+                }
+            }
+        }
+
+        function checkWin() {
+            if (isSolved) return;
+
+            let win = true;
+            for (let r = 0; r < CROSSWORD_DATA.length; r++) {
+                const targetWord = CROSSWORD_DATA[r].word;
+                const currentWord = boardState[r].join('');
+                if (currentWord !== targetWord) {
+                    win = false;
+                    break;
+                }
+            }
+
+            if (win) {
+                isSolved = true;
+                saveGameState();
+                
+                // Hide dynamic hint permanently and show completion text
+                hideActiveHint();
+                document.getElementById('default-hint-msg').innerHTML = '<i class="fa-solid fa-star text-orange-500 mr-1"></i> Puzzle Solved! <i class="fa-solid fa-star text-orange-500 ml-1"></i>';
+                document.getElementById('default-hint-msg').classList.remove('opacity-0');
+                
+                document.querySelectorAll('.cw-cell').forEach(cell => {
+                    cell.disabled = true;
+                    if (!cell.classList.contains('cw-highlight')) {
+                        cell.classList.replace('bg-white', 'bg-slate-100');
+                        cell.classList.replace('text-slate-800', 'text-slate-400');
+                        cell.classList.replace('border-slate-300', 'border-slate-200');
+                    } else {
+                        cell.classList.replace('bg-[#ffedd5]', 'bg-orange-500');
+                        cell.classList.replace('border-[#f97316]', 'border-orange-600');
+                        cell.classList.replace('text-[#c2410c]', 'text-white');
+                        cell.style.transform = 'scale(1.1)';
+                        setTimeout(() => { cell.style.transform = 'scale(1)'; }, 300);
                     }
                 });
 
-                const unlockBtn = document.getElementById('unlock-btn');
-                unlockBtn.removeAttribute('disabled');
-                unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Return to Line Map';
+                enableUnlockBtn();
+            }
+        }
+
+        function initGame() {
+            loadGameState();
+            setupCrosswordUI();
+
+            if (isSolved) {
+                checkWin(); 
+                enableUnlockBtn();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const progress = parseInt(localStorage.getItem('mrt_progress') || '0');
+            if (progress > 1) {
+                isSolved = true; 
+                CROSSWORD_DATA.forEach((row, r) => {
+                    boardState[r] = row.word.split('');
+                });
+                enableUnlockBtn()
+            }
+
+            if (localStorage.getItem('paya_lebar_welcome_acknowledged') !== 'true') {
+                showToast(
+                    '<b>Welcome to your first puzzle of the day!</b><br><br>Solve the crossword horizontally to reveal the first activity we will be embarking on!',
+                    {
+                        centered: true,
+                        actionLabel: 'Continue',
+                        autoHide: false,
+                        onAction: () => {
+                            localStorage.setItem('paya_lebar_welcome_acknowledged', 'true');
+                            hideToast();
+                            initGame();
+                            document.getElementById('crossword-container').classList.remove('hidden');
+                        }
+                    }
+                );
+            } else {
+                initGame();
+                document.getElementById('crossword-container').classList.remove('hidden');
             }
         });
     </script>
