@@ -3,16 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Serangoon Station - CC13</title>
+    <title>CC13 Serangoon</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/shared.css" rel="stylesheet">
+    <style>
+        /* Animations */
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop { animation: pop 0.15s ease-in-out; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+
+        /* Toast fade */
+        .toast-enter { opacity: 0; transform: translateY(-20px); transition: all 0.3s; }
+        .toast-enter-active { opacity: 1; transform: translateY(0); }
+
+        /* Grid transitions */
+        .cell-transition { transition: transform 0.15s ease, background-color 0.2s ease; }
+    </style>
 </head>
 <body class="overflow-hidden bg-white text-black font-sans antialiased">
-    <!-- Main Mobile Container -->
-    <div class="app-shell max-w-md mx-auto bg-white flex flex-col justify-between shadow-2xl border-x border-slate-200/60 relative overflow-hidden">
+    <div id="toast" class="fixed inset-x-4 bottom-4 z-[100] max-w-[22rem] mx-auto bg-[#063e4d] text-slate-100 border border-orange-500/30 rounded-2xl shadow-2xl shadow-slate-950/30 px-4 py-3 flex items-start gap-3 scale-95 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="mt-0.5 text-orange-400 flex-shrink-0">
+            <i class="fa-solid fa-circle-info"></i>
+        </div>
+        <div class="min-w-0 flex-1">
+            <div class="toast-msg text-[11px] leading-relaxed text-slate-100"></div>
+            <button id="toast-action" type="button" class="hidden mt-3 px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-400 text-slate-950 text-[11px] font-bold transition-colors duration-200"></button>
+        </div>
+    </div>
+
+    <div class="app-shell max-w-md mx-auto bg-white flex flex-col justify-between h-screen shadow-2xl border-x border-slate-200/60 relative overflow-hidden">
         
-        <!-- Header -->
         <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between">
             <button onclick="goBack()" class="text-sm font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1">
                 <i class="fa-solid fa-chevron-left"></i> Map
@@ -22,159 +53,451 @@
                 <span class="font-lta bg-[#9900aa] text-white text-[10px] px-1.5 py-0.5 rounded font-black tracking-wide">NE12</span>
                 <span class="font-lta text-xs font-bold text-slate-200">Serangoon</span>
             </div>
-            <div class="w-10"></div> <!-- spacer -->
+            <div class="w-10"></div>
         </header>
 
-        <!-- Main Content -->
-        <main class="flex-1 px-5 py-6 space-y-6">
+        <div id="strands" class="hidden flex-grow flex flex-col relative overflow-hidden bg-white">
+
+            <div id="toast-container" class="absolute top-24 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-[80%] items-center pointer-events-none"></div>
             
-            <!-- Hero Card -->
-            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500/10 via-slate-900 to-purple-500/5 border border-slate-800/80 p-5 space-y-4">
-                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl"></div>
+            <header class="flex flex-col items-center justify-center p-4 bg-white border-b border-slate-200 shadow-sm z-10 sticky top-0">
+                <h1 class="text-3xl font-karnak font-black tracking-wider text-slate-800">Strands</h1>
+                <p class="text-xs text-slate-500 font-medium mt-1">Look out for the Spangram!</p>
+            </header>
+            
+            <main class="flex-grow flex flex-col items-center pt-8 pb-4 px-4 overflow-y-auto">
                 
-                <div class="flex items-center justify-between">
-                    <span class="text-[10px] uppercase font-black tracking-wider text-orange-400 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20" font-lta>Stage 3: Northeast Gateway</span>
-                    <i class="fa-solid fa-store text-orange-500 text-lg"></i>
-                </div>
-                
-                <div class="space-y-1">
-                    <h2 class="font-lta text-xl font-extrabold text-white">Exploring Serangoon</h2>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Serangoon MRT Station is a major transit node, establishing a seamless transfer between the Circle Line and the North East Line. It is a vital artery for daily commuters in northeastern Singapore.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Quiz Card -->
-            <div class="bg-slate-950/40 border border-slate-800/60 rounded-2xl p-5 space-y-4">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-7 h-7 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500 border border-orange-500/20">
-                        <i class="fa-solid fa-circle-question text-sm"></i>
+                <div class="mb-8 flex flex-col items-center">
+                    <div class="bg-[#B4D9E7] text-slate-900 text-[10px] font-bold tracking-widest px-8 py-1 rounded-t-lg uppercase w-64 text-center">
+                        Today's Theme
                     </div>
-                    <h3 class="font-lta text-xs font-black uppercase tracking-wider text-slate-200">Local Knowledge Quiz</h3>
+                    <div class="bg-white border border-[#B4D9E7] border-t-0 px-8 py-2 rounded-b-lg shadow-sm font-bold text-lg text-slate-800 w-64 text-center" id="theme-hint">
+                        HTV, ITV, JTV, ...
+                    </div>
                 </div>
+
+                <div id="current-selection" class="h-8 mb-2 font-bold text-xl text-slate-700 tracking-widest uppercase"></div>
                 
-                <p class="text-xs text-slate-300 leading-relaxed font-semibold">
-                    Which massive, multi-story suburban shopping mall is directly integrated above Serangoon MRT Station?
-                </p>
-
-                <!-- Options Grid -->
-                <div class="space-y-2.5 pt-2">
-                    <button id="correct-opt" onclick="checkAnswer(this, true)" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>A) NEX Shopping Mall</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                    <button onclick="checkAnswer(this, false)" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>B) Tampines 1</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                    <button onclick="checkAnswer(this, false)" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>C) Jem Mall</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
-                    <button onclick="checkAnswer(this, false)" class="option-btn w-full text-left p-3.5 rounded-xl border border-slate-800 hover:border-slate-700 bg-slate-900/50 hover:bg-slate-900 transition-all text-xs font-medium flex items-center justify-between">
-                        <span>D) Junction 8</span>
-                        <i class="fa-regular fa-circle text-slate-600"></i>
-                    </button>
+                <div class="relative w-fit touch-none select-none">
+                    <svg id="connections-layer" class="absolute inset-0 pointer-events-none z-0 w-full h-full overflow-visible"></svg>
+                    <div id="board" class="grid gap-1.5 w-fit relative z-10"></div>
                 </div>
-            </div>
 
-            <!-- Local Highlight -->
-            <div class="bg-slate-950/20 rounded-2xl border border-slate-800/40 p-4 flex items-start space-x-3">
-                <i class="fa-solid fa-feather text-amber-500 text-sm mt-0.5 flex-shrink-0"></i>
-                <div class="space-y-1">
-                    <h4 class="font-lta text-[11px] font-bold text-slate-200">Heritage Insight</h4>
-                    <p class="text-[10px] text-slate-400 leading-relaxed">
-                        Serangoon's name is believed to have originated from a local bird species, the "Burung Rengung," which was frequently sighted in the swampy marshlands of the Serangoon River in historical Singapore.
-                    </p>
+                <div class="mt-8 text-xs font-semibold text-slate-500 bg-slate-100 px-4 py-1.5 rounded-full border border-slate-200">
+                    <span id="progress-text">0 of 0</span> words found
                 </div>
-            </div>
+            </main>
+        </div>
 
-        </main>
-
-        <!-- Bottom Action Bar -->
-        <footer class="bg-white border-t border-slate-200/60 p-5 flex flex-col space-y-3">
+        <footer class="bg-white border-t border-slate-200/60 p-5 flex flex-col space-y-3 z-50">
             <button id="unlock-btn" disabled onclick="unlockNext()" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs bg-slate-800 border border-slate-700 text-slate-500 cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-950/10">
-                <i class="fa-solid fa-lock text-[10px]"></i> Answer Quiz to Unlock Buona Vista
-            </button>
-            <button onclick="goBack()" class="w-full py-3 rounded-xl font-bold text-xs bg-slate-950/40 hover:bg-slate-950/80 border border-slate-800 text-slate-400 hover:text-white transition-all flex items-center justify-center gap-1.5">
-                <i class="fa-solid fa-arrow-left"></i> Back to Line Map
+                <i class="fa-solid fa-lock text-[10px]"></i> Solve to unlock next station
             </button>
         </footer>
 
     </div>
 
     <script>
-        let isCorrectAnswered = false;
-
-        function goBack() {
-            window.location.href = 'index.html';
-        }
-
-        function checkAnswer(btn, isCorrect) {
-            if (isCorrectAnswered) return;
-            
-            document.querySelectorAll('.option-btn').forEach(b => {
-                b.classList.add('pointer-events-none', 'opacity-60');
-            });
-            
-            if (isCorrect) {
-                isCorrectAnswered = true;
-                btn.classList.remove('opacity-60', 'border-slate-800', 'bg-slate-900/50');
-                btn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                btn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
+        // ==========================================
+        // STRANDS CONFIGURATION
+        // ==========================================
                 
-                // Enable unlock button
-                const unlockBtn = document.getElementById('unlock-btn');
-                unlockBtn.removeAttribute('disabled');
-                unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Continue Journey to Buona Vista';
-            } else {
-                btn.classList.remove('opacity-60', 'border-slate-800', 'bg-slate-900/50');
-                btn.classList.add('border-red-500/80', 'bg-red-950/20', 'text-red-400');
-                btn.querySelector('i').className = 'fa-solid fa-circle-xmark text-red-500';
-                
-                // Highlight correct after brief delay
-                setTimeout(() => {
-                    const correctBtn = document.getElementById('correct-opt');
-                    correctBtn.classList.remove('opacity-60', 'border-slate-800', 'bg-slate-900/50');
-                    correctBtn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                    correctBtn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
-                    
-                    const unlockBtn = document.getElementById('unlock-btn');
-                    unlockBtn.removeAttribute('disabled');
-                    unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                    unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Continue Journey to Buona Vista';
-                }, 1000);
-            }
+        const STRANDS_GRID = [
+            ['K', 'V', 'O', 'C', 'I', 'S'],
+            ['S', 'A', 'I', 'C', 'P', 'U'],
+            ['I', 'N', 'R', 'E', 'I', 'M'],
+            ['M', 'A', 'G', 'A', 'T', 'H'],
+            ['I', 'R', 'T', 'S', 'O', 'C'],
+            ['C', 'E', 'I', 'T', 'S', 'K'],
+            ['R', 'N', 'O', 'I', 'C', 'E'],
+            ['O', 'P', 'H', 'R', 'Y', 'L'],
+        ];
+
+        const THEME_WORDS = ["VOICE", "MUSIC", "PITCH", "SING", "MICROPHONE", "ARTIST", "LYRICS"];
+        const SPANGRAM = "KARAOKE";
+
+        // Colors
+        const COLOR_SPANGRAM = '#FCD34D'; // Tailwind yellow-300
+        const COLOR_THEME = '#BAE6FD';    // Tailwind sky-200
+        const COLOR_SELECT = '#E2E8F0';   // Tailwind slate-200
+
+        // ==========================================
+        
+        const ROWS = STRANDS_GRID.length;
+        const COLS = STRANDS_GRID[0].length;
+        const STORAGE_KEY = 'strands-state-serangoon';
+
+        let selectedCells = []; 
+        let foundWords = [];    
+        let gameOver = false;
+        let uiInitialized = false;
+
+        // DOM Elements
+        const boardEl = document.getElementById('board');
+        const svgEl = document.getElementById('connections-layer');
+        const selectionTextEl = document.getElementById('current-selection');
+        const progressTextEl = document.getElementById('progress-text');
+        const toastContainer = document.getElementById('toast-container');
+
+        // Utility functions
+        function goBack() { window.location.href = 'index.html'; }
+
+        function enableUnlockBtn() {
+            const unlockBtn = document.getElementById('unlock-btn');
+            unlockBtn.removeAttribute('disabled');
+            unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
+            unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Continue on your journey!';
         }
 
         function unlockNext() {
-            const currentProgress = parseInt(localStorage.getItem('mrt_progress') || '0');
-            if (currentProgress === 2) {
-                localStorage.setItem('mrt_progress', '3');
-            }
+            const currentProgress = parseInt(localStorage.getItem('mrt_progress') || '2');
+            if (currentProgress === 2) localStorage.setItem('mrt_progress', '3');
             goBack();
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const progress = parseInt(localStorage.getItem('mrt_progress') || '0');
-            if (progress > 2) {
-                const correctBtn = document.getElementById('correct-opt');
-                correctBtn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                correctBtn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
-                isCorrectAnswered = true;
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.replace('top-1/2', 'bottom-4');
+            toast.classList.remove('-translate-y-1/2', 'scale-100', 'opacity-100', 'pointer-events-auto');
+            toast.classList.add('scale-95', 'opacity-0', 'pointer-events-none');
+        }
+
+        function showToast(message, options = {}) {
+            const { actionLabel = null, onAction = null, autoHide = true, duration = 2500, centered = false } = options;
+            const toast = document.getElementById('toast');
+            const actionButton = document.getElementById('toast-action');
+            const toastMessage = toast.querySelector('.toast-msg');
+
+            toastMessage.innerHTML = message;
+            actionButton.onclick = null;
+
+            if (centered) {
+                toast.classList.remove('bottom-4');
+                toast.classList.add('top-1/2', '-translate-y-1/2');
+            } else {
+                toast.classList.remove('top-1/2', '-translate-y-1/2');
+                toast.classList.add('bottom-4');
+            }
+
+            if (actionLabel && typeof onAction === 'function') {
+                actionButton.textContent = actionLabel;
+                actionButton.classList.remove('hidden');
+                toast.classList.replace('pointer-events-none', 'pointer-events-auto');
+                actionButton.onclick = onAction;
+            } else {
+                actionButton.classList.add('hidden');
+                toast.classList.replace('pointer-events-auto', 'pointer-events-none');
+            }
+
+            toast.classList.remove('scale-95', 'opacity-0');
+            toast.classList.add('scale-100', 'opacity-100');
+
+            if (window.toastTimeout) clearTimeout(window.toastTimeout);
+            if (autoHide) window.toastTimeout = setTimeout(hideToast, duration);
+        }
+
+        function showMiniToast(message, duration = 2000) {
+            const toast = document.createElement('div');
+            toast.textContent = message;
+            toast.className = 'bg-slate-800 text-white text-sm text-center px-4 py-2 rounded-full font-bold shadow-lg toast-enter pointer-events-none';
+            toastContainer.appendChild(toast);
+            
+            requestAnimationFrame(() => toast.classList.add('toast-enter-active'));
+
+            setTimeout(() => {
+                toast.classList.remove('toast-enter-active');
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // --- Game Logic ---
+
+        function initGame() {
+            if (!uiInitialized) setupGameUI();
+
+            selectedCells = [];
+            foundWords = [];
+            gameOver = false;
+
+            const savedState = loadGameState();
+            if (savedState) {
+                foundWords = savedState.foundWords || [];
+                gameOver = Boolean(savedState.gameOver);
+            }
+
+            updateProgress();
+            updateBoardUI();
+
+            if (gameOver) enableUnlockBtn();
+        }
+
+        function saveGameState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({ foundWords, gameOver }));
+            } catch (e) { console.warn('Could not save state', e); }
+        }
+
+        function loadGameState() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_KEY));
+            } catch (e) { return null; }
+        }
+
+        function setupGameUI() {
+            boardEl.style.gridTemplateColumns = `repeat(${COLS}, minmax(0, 1fr))`;
+            boardEl.innerHTML = '';
+
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const tileEl = document.createElement('div');
+                    tileEl.id = `tile-${r}-${c}`;
+                    // Initial state is transparent background, just text
+                    tileEl.className = 'cell-transition w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-transparent flex items-center justify-center text-xl sm:text-2xl font-bold cursor-pointer text-slate-800';
+                    tileEl.textContent = STRANDS_GRID[r][c];
+                    
+                    tileEl.addEventListener('mousedown', () => handleCellClick(r, c));
+                    tileEl.addEventListener('touchstart', (e) => {
+                        e.preventDefault(); 
+                        handleCellClick(r, c);
+                    });
+
+                    boardEl.appendChild(tileEl);
+                }
+            }
+            uiInitialized = true;
+            
+            // Redraw paths if window resizes
+            window.addEventListener('resize', drawPaths);
+        }
+
+        function isAdjacent(cell1, cell2) {
+            const rowDiff = Math.abs(cell1.r - cell2.r);
+            const colDiff = Math.abs(cell1.c - cell2.c);
+            return (rowDiff <= 1 && colDiff <= 1) && !(rowDiff === 0 && colDiff === 0);
+        }
+
+        function isCellFound(r, c) {
+            return foundWords.some(fw => fw.cells.some(cell => cell.r === r && cell.c === c));
+        }
+
+        function handleCellClick(r, c) {
+            if (gameOver || isCellFound(r, c)) return;
+
+            const indexInSelection = selectedCells.findIndex(cell => cell.r === r && cell.c === c);
+
+            if (selectedCells.length === 0) {
+                selectedCells.push({r, c});
+                updateBoardUI();
+                return;
+            }
+
+            const lastCell = selectedCells[selectedCells.length - 1];
+
+            if (indexInSelection === selectedCells.length - 1) {
+                if (selectedCells.length >= 3) {
+                    evaluateSelection();
+                } else {
+                    const cellsToShake = [...selectedCells];
+                    selectedCells = [];
+                    updateBoardUI();
+                    requestAnimationFrame(() => shakeSelection(cellsToShake));
+                }
+                return;
+            }
+
+            if (indexInSelection !== -1) {
+                selectedCells = selectedCells.slice(0, indexInSelection + 1);
+                updateBoardUI();
+                return;
+            }
+
+            if (isAdjacent(lastCell, {r, c})) {
+                selectedCells.push({r, c});
+                updateBoardUI();
+            } else {
+                selectedCells = [{r, c}];
+                updateBoardUI();
+            }
+        }
+
+        function evaluateSelection() {
+            const word = selectedCells.map(cell => STRANDS_GRID[cell.r][cell.c]).join('');
+            const isSpangram = word === SPANGRAM;
+            const isTheme = THEME_WORDS.includes(word);
+            const isAlreadyFound = foundWords.some(fw => fw.word === word);
+
+            // Save the selection layout to apply the shake animation to them if wrong
+            const lastSelection = [...selectedCells];
+            selectedCells = []
+
+            if ((isSpangram || isTheme) && !isAlreadyFound) {
+                foundWords.push({ 
+                    word, 
+                    cells: [...lastSelection], 
+                    type: isSpangram ? 'spangram' : 'theme' 
+                });
+                showMiniToast(isSpangram ? "SPANGRAM!" : "Awesome!");
                 
-                document.querySelectorAll('.option-btn').forEach(b => {
-                    if (b !== correctBtn) {
-                        b.classList.add('pointer-events-none', 'opacity-40');
+                checkWinCondition();
+                
+                saveGameState();
+                updateBoardUI();
+                updateProgress();
+            } else {
+                if (isAlreadyFound) showMiniToast("Already found");
+                else showMiniToast("Not a theme word");
+                                
+                saveGameState();
+                updateBoardUI(); // Trigger UI cleanup first (removes gray bg + borders)
+                updateProgress();
+
+                // Wait for the UI update frame, then apply shake to the previous cells
+                requestAnimationFrame(() => shakeSelection(lastSelection));
+            }
+        }
+
+        function shakeSelection(cellsToShake) {
+            cellsToShake.forEach(cell => {
+                const el = document.getElementById(`tile-${cell.r}-${cell.c}`);
+                if (el) {
+                    el.classList.remove('animate-shake');
+                    void el.offsetWidth; // Trigger reflow
+                    el.classList.add('animate-shake');
+                }
+            });
+        }
+
+        function updateBoardUI() {
+            // Reset all visually
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const tile = document.getElementById(`tile-${r}-${c}`);
+                    tile.className = 'cell-transition w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-transparent flex items-center justify-center text-xl sm:text-2xl font-bold cursor-pointer text-slate-800';
+                    tile.style.backgroundColor = '';
+                }
+            }
+
+            // Apply Found Words styles
+            foundWords.forEach(fw => {
+                fw.cells.forEach(cell => {
+                    const tile = document.getElementById(`tile-${cell.r}-${cell.c}`);
+                    if (fw.type === 'spangram') {
+                        tile.style.backgroundColor = COLOR_SPANGRAM;
+                        tile.classList.add('text-slate-900', 'pointer-events-none');
+                        tile.classList.remove('bg-transparent', 'text-slate-800');
+                    } else {
+                        tile.style.backgroundColor = COLOR_THEME;
+                        tile.classList.add('text-slate-900', 'pointer-events-none');
+                        tile.classList.remove('bg-transparent', 'text-slate-800');
                     }
                 });
+            });
 
-                const unlockBtn = document.getElementById('unlock-btn');
-                unlockBtn.removeAttribute('disabled');
-                unlockBtn.className = 'w-full py-3.5 px-4 rounded-xl font-extrabold text-xs bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-slate-950 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] cursor-pointer';
-                unlockBtn.innerHTML = '<i class="fa-solid fa-train"></i> Return to Line Map';
+            // Apply Current Selection styles
+            selectedCells.forEach((cell, index) => {
+                const tile = document.getElementById(`tile-${cell.r}-${cell.c}`);
+                const isLast = index === selectedCells.length - 1;
+                
+                tile.classList.remove('bg-transparent');
+                tile.style.backgroundColor = COLOR_SELECT;
+                tile.classList.add('scale-90');
+                
+                if (isLast) {
+                    // Slight border to indicate the 'submit' head
+                    tile.classList.add('ring-4', 'ring-slate-300/50');
+                }
+                
+                tile.classList.add('animate-pop');
+            });
+
+            selectionTextEl.textContent = selectedCells.map(cell => STRANDS_GRID[cell.r][cell.c]).join('');
+            
+            // Draw connections immediately after layout updates
+            requestAnimationFrame(drawPaths);
+        }
+
+        // Draw the SVG lines behind the tiles
+        function drawPaths() {
+            svgEl.innerHTML = '';
+            
+            // 1. Draw found word lines
+            foundWords.forEach(fw => {
+                const color = fw.type === 'spangram' ? COLOR_SPANGRAM : COLOR_THEME;
+                drawLinePath(fw.cells, color);
+            });
+
+            // 2. Draw current selection line
+            if (selectedCells.length > 1) {
+                drawLinePath(selectedCells, COLOR_SELECT);
+            }
+        }
+
+        function drawLinePath(cells, color) {
+            if (cells.length < 2) return;
+            
+            const boardRect = boardEl.getBoundingClientRect();
+            
+            const points = cells.map(cell => {
+                const el = document.getElementById(`tile-${cell.r}-${cell.c}`);
+                const rect = el.getBoundingClientRect();
+                
+                // Calculate center relative to the board container
+                const x = (rect.left - boardRect.left) + (rect.width / 2);
+                const y = (rect.top - boardRect.top) + (rect.height / 2);
+                return `${x},${y}`;
+            }).join(' ');
+
+            const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+            polyline.setAttribute('points', points);
+            polyline.setAttribute('fill', 'none');
+            polyline.setAttribute('stroke', color);
+            // Thick line to blend seamlessly with the circles
+            polyline.setAttribute('stroke-width', '16'); 
+            polyline.setAttribute('stroke-linecap', 'round');
+            polyline.setAttribute('stroke-linejoin', 'round');
+            
+            svgEl.appendChild(polyline);
+        }
+
+        function updateProgress() {
+            const targetTotal = THEME_WORDS.length + (SPANGRAM ? 1 : 0);
+            progressTextEl.textContent = `${foundWords.length} of ${targetTotal}`;
+        }
+
+        function checkWinCondition() {
+            const targetTotal = THEME_WORDS.length + (SPANGRAM ? 1 : 0);
+            if (foundWords.length >= targetTotal) {
+                gameOver = true;
+                enableUnlockBtn();
+                setTimeout(() => showToast("<b>Perfect!</b><br><br>You've uncovered all the themes.", { centered: true, autoHide: false, actionLabel: 'View Map', onAction: goBack }), 1000);
+            }
+        }
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            const progress = parseInt(localStorage.getItem('mrt_progress') || '1');
+            if (progress > 2) {
+                enableUnlockBtn();
+            }
+
+            if (localStorage.getItem('serangoon_welcome_acknowledged') !== 'true') {
+                showToast(
+                    "<b>Hope you enjoyed your pizza at this station!</b><br><br>It's time to solve yet another familiar game in order to unlock the next station and its activity!",
+                    {
+                        centered: true,
+                        actionLabel: 'Play',
+                        autoHide: false,
+                        onAction: () => {
+                            localStorage.setItem('serangoon_welcome_acknowledged', 'true');
+                            hideToast();
+                            initGame();
+                            document.getElementById('strands').classList.remove('hidden');
+                        }
+                    }
+                );
+            } else {
+                initGame();
+                document.getElementById('strands').classList.remove('hidden');
             }
         });
     </script>

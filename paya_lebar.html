@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Paya Lebar Station - CC9</title>
+    <title>CC9 Paya Lebar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/shared.css" rel="stylesheet">
@@ -65,12 +65,13 @@
                 <span class="font-lta bg-[#009645] text-white text-[10px] px-1.5 py-0.5 rounded font-black tracking-wide">EW8</span>
                 <span class="font-lta text-xs font-bold text-slate-200">Paya Lebar</span>
             </div>
-            <div class="w-10"></div> </header>
+            <div class="w-10"></div>
+        </header>
 
         <div id='crossword-container' class="hidden flex-1 overflow-y-auto no-scrollbar flex flex-col relative bg-slate-50 pb-2">
 
             <header class="flex flex-col items-center justify-center p-4 bg-white border-b border-slate-200 shadow-sm z-10 sticky top-0">
-                <h1 class="text-3xl font-karnak font-black tracking-wider text-slate-800">CROSSWORD</h1>
+                <h1 class="text-3xl font-karnak font-black tracking-wider text-slate-800">Crossword</h1>
                 <p class="text-xs text-slate-500 font-medium mt-1">Solve to reveal the hidden word!</p>
             </header>
 
@@ -388,7 +389,7 @@
                 
                 // Hide dynamic hint permanently and show completion text
                 hideActiveHint();
-                document.getElementById('default-hint-msg').innerHTML = '<i class="fa-solid fa-star text-orange-500 mr-1"></i> Puzzle Solved! <i class="fa-solid fa-star text-orange-500 ml-1"></i>';
+                document.getElementById('default-hint-msg').innerHTML = '<i class="fa-solid fa-star text-orange-500 mr-1"></i> You found the hidden word! <i class="fa-solid fa-star text-orange-500 ml-1"></i>';
                 document.getElementById('default-hint-msg').classList.remove('opacity-0');
                 
                 document.querySelectorAll('.cw-cell').forEach(cell => {
