@@ -44,7 +44,7 @@
 
     <div class="app-shell max-w-md mx-auto bg-white flex flex-col justify-between h-screen shadow-2xl border-x border-slate-200/60 relative overflow-hidden">
         
-        <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between">
+        <header class="bg-[#063e4d] border-b border-slate-200/20 p-4 sticky top-0 z-50 flex items-center justify-between shrink-0">
             <button onclick="goBack()" class="text-sm font-semibold text-slate-400 hover:text-white transition-all flex items-center gap-1">
                 <i class="fa-solid fa-chevron-left"></i> Map
             </button>
@@ -58,39 +58,39 @@
 
         <div id="strands" class="hidden flex-grow flex flex-col relative overflow-hidden bg-white">
 
-            <div id="toast-container" class="absolute top-24 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-[80%] items-center pointer-events-none"></div>
+            <div id="toast-container" class="absolute top-20 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-[80%] items-center pointer-events-none"></div>
             
-            <header class="flex flex-col items-center justify-center p-4 bg-white border-b border-slate-200 shadow-sm z-10 sticky top-0">
+            <header class="flex flex-col items-center justify-center p-2 bg-white border-b border-slate-200 shadow-sm z-10 sticky top-0">
                 <h1 class="text-3xl font-karnak font-black tracking-wider text-slate-800">Strands</h1>
                 <p class="text-xs text-slate-500 font-medium mt-1">Look out for the Spangram!</p>
             </header>
             
-            <main class="flex-grow flex flex-col items-center pt-8 pb-4 px-4 overflow-y-auto">
+            <main class="flex-grow flex flex-col items-center pt-3 pb-2 px-4 overflow-y-auto">
                 
-                <div class="mb-8 flex flex-col items-center">
-                    <div class="bg-[#B4D9E7] text-slate-900 text-[10px] font-bold tracking-widest px-8 py-1 rounded-t-lg uppercase w-64 text-center">
+                <div class="mb-3 flex flex-col items-center">
+                    <div class="bg-[#B4D9E7] text-slate-900 text-[9px] font-bold tracking-widest px-8 py-0.5 rounded-t-lg uppercase w-64 text-center">
                         Today's Theme
                     </div>
-                    <div class="bg-white border border-[#B4D9E7] border-t-0 px-8 py-2 rounded-b-lg shadow-sm font-bold text-lg text-slate-800 w-64 text-center" id="theme-hint">
+                    <div class="bg-white border border-[#B4D9E7] border-t-0 px-8 py-1.5 rounded-b-lg shadow-sm font-bold text-base text-slate-800 w-64 text-center" id="theme-hint">
                         HTV, ITV, JTV, ...
                     </div>
                 </div>
 
-                <div id="current-selection" class="h-8 mb-2 font-bold text-xl text-slate-700 tracking-widest uppercase"></div>
+                <div id="current-selection" class="h-10 flex items-center justify-center mb-1 font-bold text-xl text-slate-700 tracking-widest uppercase">&nbsp;</div>
                 
-                <div class="relative w-fit touch-none select-none">
+                <div id="game-container" class="relative w-fit touch-none select-none">
                     <svg id="connections-layer" class="absolute inset-0 pointer-events-none z-0 w-full h-full overflow-visible"></svg>
                     <div id="board" class="grid gap-1.5 w-fit relative z-10"></div>
                 </div>
 
-                <div class="mt-8 text-xs font-semibold text-slate-500 bg-slate-100 px-4 py-1.5 rounded-full border border-slate-200">
-                    <span id="progress-text">0 of 0</span> words found
+                <div class="mt-4 text-xs text-black px-4 w-full text-right">
+                    <span id="progress-text">0 of 0</span> theme words found.
                 </div>
             </main>
         </div>
 
-        <footer class="bg-white border-t border-slate-200/60 p-5 flex flex-col space-y-3 z-50">
-            <button id="unlock-btn" disabled onclick="unlockNext()" class="w-full py-3.5 px-4 rounded-xl font-bold text-xs bg-slate-800 border border-slate-700 text-slate-500 cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-950/10">
+        <footer class="bg-white border-t border-slate-200/60 p-4 flex flex-col space-y-3 z-50 shrink-0">
+            <button id="unlock-btn" disabled onclick="unlockNext()" class="w-full py-3 px-4 rounded-xl font-bold text-xs bg-slate-800 border border-slate-700 text-slate-500 cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-950/10">
                 <i class="fa-solid fa-lock text-[10px]"></i> Solve to unlock next station
             </button>
         </footer>
@@ -116,11 +116,6 @@
         const THEME_WORDS = ["VOICE", "MUSIC", "PITCH", "SING", "MICROPHONE", "ARTIST", "LYRICS"];
         const SPANGRAM = "KARAOKE";
 
-        // Colors
-        const COLOR_SPANGRAM = '#FCD34D'; // Tailwind yellow-300
-        const COLOR_THEME = '#BAE6FD';    // Tailwind sky-200
-        const COLOR_SELECT = '#E2E8F0';   // Tailwind slate-200
-
         // ==========================================
         
         const ROWS = STRANDS_GRID.length;
@@ -132,12 +127,18 @@
         let gameOver = false;
         let uiInitialized = false;
 
+        // Swipe & Pointer State
+        let isDragging = false;
+        let didMove = false;
+        let isSubmitTap = false;
+
         // DOM Elements
         const boardEl = document.getElementById('board');
         const svgEl = document.getElementById('connections-layer');
         const selectionTextEl = document.getElementById('current-selection');
         const progressTextEl = document.getElementById('progress-text');
         const toastContainer = document.getElementById('toast-container');
+        const gameContainerEl = document.getElementById('game-container');
 
         // Utility functions
         function goBack() { window.location.href = 'index.html'; }
@@ -251,23 +252,138 @@
                 for (let c = 0; c < COLS; c++) {
                     const tileEl = document.createElement('div');
                     tileEl.id = `tile-${r}-${c}`;
-                    // Initial state is transparent background, just text
                     tileEl.className = 'cell-transition w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-transparent flex items-center justify-center text-xl sm:text-2xl font-bold cursor-pointer text-slate-800';
                     tileEl.textContent = STRANDS_GRID[r][c];
                     
-                    tileEl.addEventListener('mousedown', () => handleCellClick(r, c));
-                    tileEl.addEventListener('touchstart', (e) => {
-                        e.preventDefault(); 
-                        handleCellClick(r, c);
-                    });
-
+                    // Note: Event listeners are no longer attached to individual tiles
                     boardEl.appendChild(tileEl);
                 }
             }
-            uiInitialized = true;
+
+            if (!uiInitialized) {
+                // Attach global pointer events for dragging
+                gameContainerEl.addEventListener('mousedown', handlePointerDown);
+                window.addEventListener('mousemove', handlePointerMove);
+                window.addEventListener('mouseup', handlePointerUp);
+
+                // Touch support
+                gameContainerEl.addEventListener('touchstart', handlePointerDown, { passive: false });
+                window.addEventListener('touchmove', handlePointerMove, { passive: false });
+                window.addEventListener('touchend', handlePointerUp);
+                window.addEventListener('touchcancel', handlePointerUp);
+            }
             
-            // Redraw paths if window resizes
+            uiInitialized = true;
             window.addEventListener('resize', drawPaths);
+        }
+
+        // --- Swipe & Pointer Engine ---
+
+        function getCell(e) {
+            let clientX, clientY;
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else if (e.changedTouches && e.changedTouches.length > 0) {
+                clientX = e.changedTouches[0].clientX;
+                clientY = e.changedTouches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            // Uses elementFromPoint to track finger even when it leaves the original element
+            const el = document.elementFromPoint(clientX, clientY);
+            if (el && el.id && el.id.startsWith('tile-')) {
+                const parts = el.id.split('-');
+                return { r: parseInt(parts[1]), c: parseInt(parts[2]) };
+            }
+            return null;
+        }
+
+        function handlePointerDown(e) {
+            if (e.type === 'touchstart' && e.cancelable) e.preventDefault(); 
+            
+            const cell = getCell(e);
+            if (!cell || gameOver || isCellFound(cell.r, cell.c)) return;
+
+            isDragging = true;
+            didMove = false;
+            isSubmitTap = false;
+
+            const index = selectedCells.findIndex(c => c.r === cell.r && c.c === cell.c);
+            const isLastCell = selectedCells.length > 0 && index === selectedCells.length - 1;
+
+            if (isLastCell) {
+                // Tapped the head of the snake. Prep for double-tap submit.
+                isSubmitTap = true;
+                return;
+            }
+
+            if (selectedCells.length > 0) {
+                const lastCell = selectedCells[selectedCells.length - 1];
+                if (isAdjacent(lastCell, cell)) {
+                    // Tapped an adjacent cell (Tap-to-select mode)
+                    selectedCells.push(cell);
+                    updateBoardUI();
+                    return;
+                }
+                if (index !== -1) {
+                    // Tapped an earlier cell in the path to truncate
+                    selectedCells = selectedCells.slice(0, index + 1);
+                    updateBoardUI();
+                    return;
+                }
+            }
+
+            // Start a fresh selection
+            selectedCells = [cell];
+            updateBoardUI();
+        }
+
+        function handlePointerMove(e) {
+            if (!isDragging) return;
+            if (e.type === 'touchmove' && e.cancelable) e.preventDefault(); 
+
+            const cell = getCell(e);
+            if (!cell || isCellFound(cell.r, cell.c)) return;
+
+            const lastCell = selectedCells[selectedCells.length - 1];
+            
+            if (cell.r !== lastCell.r || cell.c !== lastCell.c) {
+                isSubmitTap = false; // Cancel submit if they start dragging
+                didMove = true;
+                
+                if (isAdjacent(lastCell, cell)) {
+                    const index = selectedCells.findIndex(c => c.r === cell.r && c.c === cell.c);
+                    if (index !== -1) {
+                        // Backtracking
+                        selectedCells = selectedCells.slice(0, index + 1);
+                    } else {
+                        // Appending
+                        selectedCells.push(cell);
+                    }
+                    updateBoardUI();
+                }
+            }
+        }
+
+        function handlePointerUp(e) {
+            if (!isDragging) return;
+            isDragging = false;
+
+            if (didMove || isSubmitTap) {
+                if (selectedCells.length >= 3) {
+                    evaluateSelection();
+                } else if (selectedCells.length > 1) {
+                    // Save layout before clearing for animation
+                    const lastSelection = [...selectedCells];
+                    selectedCells = [];
+                    updateBoardUI();
+                    requestAnimationFrame(() => shakeSelection(lastSelection));
+                }
+                // Note: If length === 1, it stays highlighted for further tap/drag additions
+            }
         }
 
         function isAdjacent(cell1, cell2) {
@@ -280,60 +396,22 @@
             return foundWords.some(fw => fw.cells.some(cell => cell.r === r && cell.c === c));
         }
 
-        function handleCellClick(r, c) {
-            if (gameOver || isCellFound(r, c)) return;
-
-            const indexInSelection = selectedCells.findIndex(cell => cell.r === r && cell.c === c);
-
-            if (selectedCells.length === 0) {
-                selectedCells.push({r, c});
-                updateBoardUI();
-                return;
-            }
-
-            const lastCell = selectedCells[selectedCells.length - 1];
-
-            if (indexInSelection === selectedCells.length - 1) {
-                if (selectedCells.length >= 3) {
-                    evaluateSelection();
-                } else {
-                    const cellsToShake = [...selectedCells];
-                    selectedCells = [];
-                    updateBoardUI();
-                    requestAnimationFrame(() => shakeSelection(cellsToShake));
-                }
-                return;
-            }
-
-            if (indexInSelection !== -1) {
-                selectedCells = selectedCells.slice(0, indexInSelection + 1);
-                updateBoardUI();
-                return;
-            }
-
-            if (isAdjacent(lastCell, {r, c})) {
-                selectedCells.push({r, c});
-                updateBoardUI();
-            } else {
-                selectedCells = [{r, c}];
-                updateBoardUI();
-            }
-        }
-
         function evaluateSelection() {
             const word = selectedCells.map(cell => STRANDS_GRID[cell.r][cell.c]).join('');
             const isSpangram = word === SPANGRAM;
             const isTheme = THEME_WORDS.includes(word);
             const isAlreadyFound = foundWords.some(fw => fw.word === word);
 
-            // Save the selection layout to apply the shake animation to them if wrong
+            // Save the selection layout BEFORE clearing it
             const lastSelection = [...selectedCells];
-            selectedCells = []
+            
+            // Clear current selection immediately so the UI removes the gray line/background
+            selectedCells = []; 
 
             if ((isSpangram || isTheme) && !isAlreadyFound) {
                 foundWords.push({ 
                     word, 
-                    cells: [...lastSelection], 
+                    cells: lastSelection, 
                     type: isSpangram ? 'spangram' : 'theme' 
                 });
                 showMiniToast(isSpangram ? "SPANGRAM!" : "Awesome!");
@@ -368,65 +446,78 @@
         }
 
         function updateBoardUI() {
-            // Reset all visually
+            // 1. Reset all visually to base state
             for (let r = 0; r < ROWS; r++) {
                 for (let c = 0; c < COLS; c++) {
                     const tile = document.getElementById(`tile-${r}-${c}`);
-                    tile.className = 'cell-transition w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-transparent flex items-center justify-center text-xl sm:text-2xl font-bold cursor-pointer text-slate-800';
-                    tile.style.backgroundColor = '';
+                    
+                    tile.classList.remove(
+                        'bg-amber-300', 'bg-sky-200', 'bg-slate-200', 
+                        'text-slate-900', 'text-slate-800', 
+                        'scale-90', 'ring-4', 'ring-slate-300/50', 'pointer-events-none'
+                    );
+
+                    tile.classList.add('bg-transparent', 'text-slate-800');
+                    tile.style.backgroundColor = ''; 
                 }
             }
 
-            // Apply Found Words styles
+            // 2. Apply Found Words styles
             foundWords.forEach(fw => {
                 fw.cells.forEach(cell => {
-                    const tile = document.getElementById(`tile-${cell.r}-${cell.c}`);
-                    if (fw.type === 'spangram') {
-                        tile.style.backgroundColor = COLOR_SPANGRAM;
-                        tile.classList.add('text-slate-900', 'pointer-events-none');
-                        tile.classList.remove('bg-transparent', 'text-slate-800');
-                    } else {
-                        tile.style.backgroundColor = COLOR_THEME;
-                        tile.classList.add('text-slate-900', 'pointer-events-none');
-                        tile.classList.remove('bg-transparent', 'text-slate-800');
+                    const targetTile = document.getElementById(`tile-${cell.r}-${cell.c}`);
+                    
+                    if (targetTile) {
+                        targetTile.classList.remove('bg-transparent', 'text-slate-800');
+                        targetTile.classList.add('text-slate-900', 'pointer-events-none');
+                        
+                        if (fw.type === 'spangram') {
+                             targetTile.classList.add('bg-amber-300');
+                        } else {
+                             targetTile.classList.add('bg-sky-200'); 
+                        }
                     }
                 });
             });
 
-            // Apply Current Selection styles
+            // 3. Apply Current Selection styles
             selectedCells.forEach((cell, index) => {
-                const tile = document.getElementById(`tile-${cell.r}-${cell.c}`);
+                const targetTile = document.getElementById(`tile-${cell.r}-${cell.c}`);
                 const isLast = index === selectedCells.length - 1;
                 
-                tile.classList.remove('bg-transparent');
-                tile.style.backgroundColor = COLOR_SELECT;
-                tile.classList.add('scale-90');
-                
-                if (isLast) {
-                    // Slight border to indicate the 'submit' head
-                    tile.classList.add('ring-4', 'ring-slate-300/50');
+                if (targetTile) {
+                    targetTile.classList.remove('bg-transparent');
+                    targetTile.classList.add('bg-slate-200', 'scale-90');
+                    
+                    if (isLast) {
+                        targetTile.classList.add('ring-4', 'ring-slate-300/50');
+                    }
+                    targetTile.classList.add('animate-pop');
                 }
-                
-                tile.classList.add('animate-pop');
             });
 
-            selectionTextEl.textContent = selectedCells.map(cell => STRANDS_GRID[cell.r][cell.c]).join('');
+            // Ensure the selection text div never collapses
+            if (selectedCells.length > 0) {
+                selectionTextEl.textContent = selectedCells.map(cell => STRANDS_GRID[cell.r][cell.c]).join('');
+            } else {
+                selectionTextEl.innerHTML = '&nbsp;';
+            }
             
-            // Draw connections immediately after layout updates
             requestAnimationFrame(drawPaths);
         }
 
-        // Draw the SVG lines behind the tiles
         function drawPaths() {
             svgEl.innerHTML = '';
             
-            // 1. Draw found word lines
+            const COLOR_SPANGRAM = '#FCD34D'; 
+            const COLOR_THEME = '#BAE6FD';    
+            const COLOR_SELECT = '#E2E8F0';   
+
             foundWords.forEach(fw => {
                 const color = fw.type === 'spangram' ? COLOR_SPANGRAM : COLOR_THEME;
                 drawLinePath(fw.cells, color);
             });
 
-            // 2. Draw current selection line
             if (selectedCells.length > 1) {
                 drawLinePath(selectedCells, COLOR_SELECT);
             }
@@ -441,7 +532,6 @@
                 const el = document.getElementById(`tile-${cell.r}-${cell.c}`);
                 const rect = el.getBoundingClientRect();
                 
-                // Calculate center relative to the board container
                 const x = (rect.left - boardRect.left) + (rect.width / 2);
                 const y = (rect.top - boardRect.top) + (rect.height / 2);
                 return `${x},${y}`;
@@ -451,7 +541,6 @@
             polyline.setAttribute('points', points);
             polyline.setAttribute('fill', 'none');
             polyline.setAttribute('stroke', color);
-            // Thick line to blend seamlessly with the circles
             polyline.setAttribute('stroke-width', '16'); 
             polyline.setAttribute('stroke-linecap', 'round');
             polyline.setAttribute('stroke-linejoin', 'round');
@@ -461,7 +550,7 @@
 
         function updateProgress() {
             const targetTotal = THEME_WORDS.length + (SPANGRAM ? 1 : 0);
-            progressTextEl.textContent = `${foundWords.length} of ${targetTotal}`;
+            progressTextEl.innerHTML = `<b>${foundWords.length}</b> of <b>${targetTotal}</b>`;
         }
 
         function checkWinCondition() {
@@ -469,11 +558,9 @@
             if (foundWords.length >= targetTotal) {
                 gameOver = true;
                 enableUnlockBtn();
-                setTimeout(() => showToast("<b>Perfect!</b><br><br>You've uncovered all the themes.", { centered: true, autoHide: false, actionLabel: 'View Map', onAction: goBack }), 1000);
             }
         }
 
-        // Initialization
         window.addEventListener('DOMContentLoaded', () => {
             const progress = parseInt(localStorage.getItem('mrt_progress') || '1');
             if (progress > 2) {
