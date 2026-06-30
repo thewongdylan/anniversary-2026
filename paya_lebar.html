@@ -423,13 +423,6 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const progress = parseInt(localStorage.getItem('mrt_progress') || '0');
-            if (progress > 1) {
-                isSolved = true; 
-                CROSSWORD_DATA.forEach((row, r) => {
-                    boardState[r] = row.word.split('');
-                });
-                enableUnlockBtn()
-            }
 
             if (localStorage.getItem('paya_lebar_welcome_acknowledged') !== 'true') {
                 showToast(
@@ -449,6 +442,13 @@
             } else {
                 initGame();
                 document.getElementById('crossword-container').classList.remove('hidden');
+                if (progress >= 1) {
+                    isSolved = true; 
+                    CROSSWORD_DATA.forEach((row, r) => {
+                        boardState[r] = row.word.split('');
+                    });
+                    enableUnlockBtn()
+                }
             }
         });
     </script>

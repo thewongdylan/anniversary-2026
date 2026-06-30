@@ -587,20 +587,6 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const progress = parseInt(localStorage.getItem('mrt_progress') || '1');
-            if (progress > 1) {
-                // Show solved wordle
-                const correctBtn = document.getElementById('correct-opt');
-                correctBtn.classList.add('border-emerald-500/80', 'bg-emerald-950/20', 'text-emerald-400');
-                correctBtn.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-500';
-                isCorrectAnswered = true;
-                
-                document.querySelectorAll('.option-btn').forEach(b => {
-                    if (b !== correctBtn) {
-                        b.classList.add('pointer-events-none', 'opacity-40');
-                    }
-                });
-                enableUnlockBtn()
-            }
 
             if (localStorage.getItem('macpherson_welcome_acknowledged') !== 'true') {
                 showToast(
@@ -620,6 +606,9 @@
             } else {
                 initGame();
                 document.getElementById('wordle').classList.remove('hidden');
+                if (progress >= 2 || gameOver) {
+                    enableUnlockBtn()
+                }
             }
         });
     </script>
